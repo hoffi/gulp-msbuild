@@ -1,12 +1,12 @@
 'use strict';
 
 var through = require('through2'),
-  gutil = require('gulp-util'),
-  PluginError = gutil.PluginError,
-  path = require('path'),
-  os = require('os'),
-  _ = require('lodash'),
-  exec = require('child_process').exec;
+    gutil = require('gulp-util'),
+    PluginError = gutil.PluginError,
+    path = require('path'),
+    os = require('os'),
+    _ = require('lodash'),
+    exec = require('child_process').exec;
 
 var PLUGIN_NAME = 'gulp-msbuild';
 
