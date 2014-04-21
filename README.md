@@ -23,7 +23,7 @@ gulp.src("./project.sln")
 
 ### Options
 
-**Example: **
+__Example__
 
 ```javascript
 var msbuild = require("gulp-msbuild");
