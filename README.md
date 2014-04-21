@@ -1,7 +1,7 @@
 # gulp-msbuild
 [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url]  [![Coverage Status][coveralls-image]][coveralls-url] [![Dependency Status][depstat-image]][depstat-url]
 
-> msbuild plugin for [gulp](https://github.com/wearefractal/gulp). 
+> msbuild plugin for [gulp](https://github.com/wearefractal/gulp).
 > Inspired by [grunt-msbuild](https://github.com/stevewillcock/grunt-msbuild)
 
 ## Usage
@@ -17,11 +17,23 @@ Then, add it to your `gulpfile.js`:
 ```javascript
 var msbuild = require("gulp-msbuild");
 
-gulp.src("./src/*.ext")
+gulp.src("./project.sln")
 	.pipe(msbuild());
 ```
 
 ### Options
+
+**Example: **
+
+```javascript
+var msbuild = require("gulp-msbuild");
+
+gulp.src("./project.sln")
+	.pipe(msbuild({
+		targets: ['Clean', 'Build'],
+		toolsVersion: 3.5
+	}));
+```
 
 #### stdout
 
@@ -39,7 +51,7 @@ gulp.src("./src/*.ext")
 
 > Specifiy Build Targets
 
-**Default:** 
+**Default:**
 ```javascript
 ['Rebuild']
 ```
