@@ -15,10 +15,13 @@ npm install --save-dev gulp-msbuild
 Then, add it to your `gulpfile.js`:
 
 ```javascript
+var gulp = require("gulp");
 var msbuild = require("gulp-msbuild");
 
-gulp.src("./project.sln")
-	.pipe(msbuild());
+gulp.task("default", function() {
+	gulp.src("./project.sln")
+		.pipe(msbuild());
+});
 ```
 
 ### Options
@@ -26,13 +29,17 @@ gulp.src("./project.sln")
 __Example__
 
 ```javascript
+var gulp = require("gulp");
 var msbuild = require("gulp-msbuild");
 
-gulp.src("./project.sln")
-	.pipe(msbuild({
-		targets: ['Clean', 'Build'],
-		toolsVersion: 3.5
-	}));
+gulp.task("default", function() {
+	gulp.src("./project.sln")
+		.pipe(msbuild({
+			targets: ['Clean', 'Build'],
+			toolsVersion: 3.5
+			})
+		);
+});
 ```
 
 #### stdout
