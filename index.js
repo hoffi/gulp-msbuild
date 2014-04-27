@@ -39,7 +39,7 @@ function buildArguments(options) {
   var args = [];
   args.push('/target:' + options.targets.join(';'));
   args.push('/verbosity:' + options.verbosity);
-  args.push('/toolsversion:' + msbuildVersions[options.toolsVersion].substr(1));
+  args.push('/toolsversion:' + parseFloat(options.toolsVersion).toFixed(1));
 
   if (options.nologo) {
     args.push('/nologo');
