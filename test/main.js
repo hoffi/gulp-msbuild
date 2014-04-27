@@ -82,7 +82,7 @@ describe('gulp-msbuild', function () {
 			cmd.should.match(/\/nologo/gi);
 			cmd.should.match(/\/property:Configuration="Release"/gi);
 			cmd.should.match(/\/verbosity:normal/gi);
-			cmd.should.match(/\/toolsversion:4.0.30319/gi);
+			cmd.should.match(/\/toolsversion:4.0/gi);
 			cmd.should.match(/\/target:Rebuild/gi);
 			done();
 		};
