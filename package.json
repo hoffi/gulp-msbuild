@@ -1,7 +1,7 @@
 {
   "name": "gulp-msbuild",
-  "version": "0.1.4",
-  "description": "A plugin for Gulp",
+  "version": "0.1.5",
+  "description": "msbuild plugin for gulp. Inspired by grunt-msbuild.",
   "keywords": [
     "gulpplugin",
     "msbuild",
