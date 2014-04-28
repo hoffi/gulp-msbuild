@@ -70,7 +70,8 @@ function msbuild(options, execFile) {
     nologo: true, 
     platform: process.platform,
     architecture: os.arch(),
-    windir: process.env.WINDIR
+    windir: process.env.WINDIR,
+    msbuildPath: ''
   }, options);
 
   var stream = through.obj(function(file, enc, callback) {
@@ -82,7 +83,11 @@ function msbuild(options, execFile) {
     this.push(file);
     options.properties.Configuration = options.configuration;
 
-    var executable = path.normalize(findMsBuildExecutable(options.toolsVersion, options.platform, options.architecture, options.windir));
+    if (!options.msbuildPath) {
+      options.msbuildPath = findMsBuildExecutable(options.toolsVersion, options.platform, options.architecture, options.windir);
+    }
+
+    var executable = path.normalize(options.msbuildPath);
     var args = buildArguments(options);
 
     var executeFunc = execFile ? execFile : exec;
