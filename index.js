@@ -94,11 +94,11 @@ function msbuild(options, execFile) {
     var cp = executeFunc([executable, file.path, args].join(' '), {}, function(err) {
       if (err) {
         gutil.log(gutil.colors.red('Build failed!'));
-        return;
-      }
+      }else {
+		gutil.log(gutil.colors.cyan('Build complete!'));
+	  }
 
-      gutil.log(gutil.colors.cyan('Build complete!'));
-      return;
+      return callback();
     });
 
     if (options.stdout && cp) {
@@ -108,8 +108,6 @@ function msbuild(options, execFile) {
     if (options.stderr && cp) {
       cp.stderr.pipe(process.stderr);
     }
-
-    return callback();
   });
 
   return stream;
