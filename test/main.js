@@ -180,4 +180,22 @@ describe('gulp-msbuild', function () {
 	  stream.end();
 	});
 
+	it('should wrap file path into double quotes', function (done) {
+		var customMsBuildPath = 'C:\\Windows\\Microsoft .NET\\Framework\\v3.5\\msbuild.exe';
+
+		var execFile = function(cmd) {
+			cmd.should.match(/(C:(.+)msbuild.exe) "(.+)".*/g);
+			done();
+		};
+
+		var stream = msbuild({msbuildPath: customMsBuildPath}, execFile);
+		var fakeFile = new vinylFile({
+	    cwd: 'cwd',
+	    path: 'path',
+	    contents: new Buffer('123')
+	  });
+	  stream.write(fakeFile);
+	  stream.end();
+	});
+
 });
