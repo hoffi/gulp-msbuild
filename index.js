@@ -93,6 +93,7 @@ function msbuild(options, execFile) {
     var executeFunc = execFile ? execFile : exec;
     var cp = executeFunc([executable, '"' + file.path + '"', args].join(' '), {}, function(err) {
       if (err) {
+        gutil.log(err);
         gutil.log(gutil.colors.red('Build failed!'));
       } else {
         gutil.log(gutil.colors.cyan('Build complete!'));
