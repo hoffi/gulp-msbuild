@@ -61,6 +61,7 @@ function msbuild(options, execFile) {
   options = _.extend({
     stdout: false,
     stderr: true,
+    maxBuffer: 500 * 1024,
     targets: ['Rebuild'],
     configuration: 'Release',
     toolsVersion: 4.0,
@@ -91,8 +92,9 @@ function msbuild(options, execFile) {
     var args = buildArguments(options);
 
     var executeFunc = execFile ? execFile : exec;
-    var cp = executeFunc([executable, '"' + file.path + '"', args].join(' '), {}, function(err) {
+    var cp = executeFunc([executable, '"' + file.path + '"', args].join(' '), { maxBuffer: options.maxBuffer }, function(err) {
       if (err) {
+        gutil.log(err);
         gutil.log(gutil.colors.red('Build failed!'));
       } else {
         gutil.log(gutil.colors.cyan('Build complete!'));
