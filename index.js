@@ -61,6 +61,7 @@ function msbuild(options, execFile) {
   options = _.extend({
     stdout: false,
     stderr: true,
+    errorOnFail: false,
     maxBuffer: 500 * 1024,
     targets: ['Rebuild'],
     configuration: 'Release',
@@ -96,6 +97,9 @@ function msbuild(options, execFile) {
       if (err) {
         gutil.log(err);
         gutil.log(gutil.colors.red('Build failed!'));
+        if(options.errorOnFail) {
+          callback(err);
+        }
       } else {
         gutil.log(gutil.colors.cyan('Build complete!'));
       }

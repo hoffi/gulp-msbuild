@@ -54,6 +54,13 @@ gulp.task("default", function() {
 
 **Default:** true
 
+#### errorOnFail
+
+> If the MSBuild job fails with an error, this will cause the gulp-msbuild stream to return an error thus causing the gulp task to fail. This is useful if using an automated build server such as [Jenkins](http://jenkins-ci.org/) where a failing MSBuild should also cause the overall build job to fail.
+
+**Default:** false
+
+
 #### maxBuffer
 
 > Specifies the largest amount of data allowed on stdout or stderr - if this value is exceeded then the msbuild child process is killed.
