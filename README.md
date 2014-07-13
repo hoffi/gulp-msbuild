@@ -112,6 +112,8 @@ msbuild({ properties: { WarningLevel: 2 } })
 
 **Default:** normal
 
+**Possible Values:** quiet, minimal, normal, detailed, diagnostic
+
 #### maxcpucount
 
 > Specifiy Maximal CPU-Count to use
