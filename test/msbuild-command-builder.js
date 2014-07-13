@@ -24,7 +24,7 @@ describe('msbuild-command-builder', function () {
 
   describe('buildArguments', function () {
     it('should build arguments with default options', function () {
-      var result = commandBuilder.buildArguments(constants.DEFAULTS);
+      var result = commandBuilder.buildArguments(defaults);
 
       expect(result).to.be.equal('/target:Rebuild /verbosity:normal /toolsversion:4.0 /nologo /property:Configuration="Release"');
     });
@@ -59,6 +59,22 @@ describe('msbuild-command-builder', function () {
       var result = commandBuilder.buildArguments(options);
 
       expect(result).to.be.equal('/target:Rebuild /verbosity:normal /toolsversion:4.0 /nologo /property:Configuration="Release" /property:WarningLevel="2"');
+    });
+
+    it('should add Configuration Property when Configuration-Option is specified', function () {
+      var options = defaults;
+      options.configuration = 'Debug';
+      var result = commandBuilder.buildArguments(options);
+
+      expect(result).to.be.equal('/target:Rebuild /verbosity:normal /toolsversion:4.0 /nologo /property:Configuration="Debug"');
+    });
+
+    it('should use Configuration Property in the custom properties list when specified', function () {
+      var options = defaults;
+      options.properties = { Configuration: 'Debug' };
+      var result = commandBuilder.buildArguments(options);
+
+      expect(result).to.be.equal('/target:Rebuild /verbosity:normal /toolsversion:4.0 /nologo /property:Configuration="Debug"');
     });
   });
 
