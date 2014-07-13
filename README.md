@@ -124,6 +124,10 @@ msbuild({ properties: { WarningLevel: 2 } })
 
 **Default:** false
 
+### MSBuild Command-Line Reference
+
+For a more detailed description of each MSBuild Option see the [MSBuild Command-Line Reference](http://msdn.microsoft.com/en-us/library/ms164311.aspx)
+
 ## License
 
 [MIT License](http://en.wikipedia.org/wiki/MIT_License)
