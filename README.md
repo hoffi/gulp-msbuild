@@ -69,7 +69,7 @@ gulp.task("default", function() {
 
 #### targets
 
-> Specifiy Build Targets
+> Specify Build Targets
 
 **Default:**
 ```javascript
@@ -78,7 +78,7 @@ gulp.task("default", function() {
 
 #### configuration
 
-> Specifiy Build Configuration (Release or Debug)
+> Specify Build Configuration (Release or Debug)
 
 **Default:** Release
 
@@ -89,7 +89,7 @@ properties: { Configuration: 'Debug' }
 
 #### toolsVersion
 
-> Specifiy the .NET Tools-Version
+> Specify the .NET Tools-Version
 
 **Default:** 4.0
 
@@ -97,7 +97,7 @@ properties: { Configuration: 'Debug' }
 
 #### properties
 
-> Specifiy Custom Build Properties
+> Specify Custom Build Properties
 
 **Default:** none
 
@@ -108,7 +108,7 @@ msbuild({ properties: { WarningLevel: 2 } })
 
 #### verbosity
 
-> Specifiy the Build Verbosity
+> Specify the Build Verbosity
 
 **Default:** normal
 
@@ -116,7 +116,7 @@ msbuild({ properties: { WarningLevel: 2 } })
 
 #### maxcpucount
 
-> Specifiy Maximal CPU-Count to use
+> Specify Maximal CPU-Count to use
 
 **Default:** 0 = MSBuild Default
 
