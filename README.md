@@ -82,6 +82,11 @@ gulp.task("default", function() {
 
 **Default:** Release
 
+**Hint:** You can also specify the Build Configuration using the *properties* option
+```json
+properties: { Configuration: 'Debug' }
+```
+
 #### toolsVersion
 
 > Specifiy the .NET Tools-Version
