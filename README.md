@@ -1,8 +1,10 @@
 # gulp-msbuild
-[![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url]  [![Coverage Status][coveralls-image]][coveralls-url] [![Dependency Status][depstat-image]][depstat-url]
+[![Build Status][travis-image]][travis-url]  [![Coverage Status][coveralls-image]][coveralls-url] [![Dependency Status][depstat-image]][depstat-url]
 
 > msbuild plugin for [gulp](https://github.com/wearefractal/gulp).
 > Inspired by [grunt-msbuild](https://github.com/stevewillcock/grunt-msbuild)
+
+![NPM version](https://nodei.co/npm/gulp-msbuild.png)
 
 ## Usage
 
@@ -133,9 +135,6 @@ For a more detailed description of each MSBuild Option see the [MSBuild Command-
 ## License
 
 [MIT License](http://en.wikipedia.org/wiki/MIT_License)
-
-[npm-url]: https://npmjs.org/package/gulp-msbuild
-[npm-image]: https://badge.fury.io/js/gulp-msbuild.png
 
 [travis-url]: http://travis-ci.org/hoffi/gulp-msbuild
 [travis-image]: https://secure.travis-ci.org/hoffi/gulp-msbuild.png?branch=master
