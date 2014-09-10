@@ -1,7 +1,7 @@
 # gulp-msbuild
 [![Build Status][travis-image]][travis-url]  [![Coverage Status][coveralls-image]][coveralls-url] [![Dependency Status][depstat-image]][depstat-url]
 
-![NPM version](https://nodei.co/npm/gulp-msbuild.png)
+[![NPM version](https://nodei.co/npm/gulp-msbuild.png)](https://www.npmjs.org/package/gulp-msbuild)
 
 > msbuild plugin for [gulp](https://github.com/wearefractal/gulp).
 > Inspired by [grunt-msbuild](https://github.com/stevewillcock/grunt-msbuild)
