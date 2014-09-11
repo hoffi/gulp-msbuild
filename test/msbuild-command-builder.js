@@ -113,7 +113,7 @@ describe('msbuild-command-builder', function () {
       options.msbuildPath = 'here';
       var command = commandBuilder.construct({ path: 'test.sln' }, options);
 
-      expect(command).to.be.match(/here "test.sln" (.+)/);
+      expect(command).to.be.match(/"here" "test.sln" (.+)/);
     });
   });
 
