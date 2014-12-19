@@ -139,8 +139,8 @@ For a more detailed description of each MSBuild Option see the [MSBuild Command-
 [travis-url]: http://travis-ci.org/hoffi/gulp-msbuild
 [travis-image]: https://secure.travis-ci.org/hoffi/gulp-msbuild.png?branch=master
 
-[coveralls-url]: https://coveralls.io/r/hoffi/gulp-msbuild
-[coveralls-image]: https://coveralls.io/repos/hoffi/gulp-msbuild/badge.png
+[coveralls-url]: https://coveralls.io/r/hoffi/gulp-msbuild?branch=master
+[coveralls-image]: https://img.shields.io/coveralls/hoffi/gulp-msbuild.svg
 
 [depstat-url]: https://david-dm.org/hoffi/gulp-msbuild
 [depstat-image]: https://david-dm.org/hoffi/gulp-msbuild.png
