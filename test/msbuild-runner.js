@@ -40,6 +40,7 @@ describe('msbuild-runner', function () {
   });
 
   it('should execute the msbuild command', function (done) {
+    defaults.stdout = true;
     msbuildRunner.startMsBuildTask(defaults, {}, function () {
       expect(gutil.log).to.have.been.calledWith(gutil.colors.cyan('Build complete!'));
       done();

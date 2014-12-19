@@ -20,9 +20,9 @@ module.exports = function(options) {
     }
 
     return msbuildRunner.startMsBuildTask(options, file, function(err) {
-        if (err) return callback(err);
-        self.push(file);
-        return callback();
+      if (err) return callback(err);
+      self.push(file);
+      return callback();
     });
   });
 
