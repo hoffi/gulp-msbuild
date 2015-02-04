@@ -41,7 +41,19 @@ describe('msbuild-finder', function () {
     expect(result).to.be.equal(expectedResult);
   });
 
-  it('should use 64bit msbuild on windows with x64', function () {
+  it('should use 64bit msbuild on 64bit windows', function () {
+    var windir = 'WINDIR';
+    var toolsVersion = 3.5;
+    process.env['ProgramFiles(x86)'] = true;
+    var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion, windir: windir });
+
+    var expectMSBuildVersion = constants.MSBUILD_VERSIONS[toolsVersion];
+    var expectedResult = windir + '/Microsoft.Net/Framework/' + expectMSBuildVersion + '/MSBuild.exe';
+
+    expect(result).to.be.equal(expectedResult);
+  });
+
+  it('should use 64bit msbuild on windows with provided x64 architecture', function () {
     var windir = 'WINDIR';
     var toolsVersion = 3.5;
     var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion, windir: windir, architecture: 'x64' });
