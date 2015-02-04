@@ -3,7 +3,8 @@
 
 var chai          = require('chai'),
     constants     = require('../lib/constants'),
-    expect        = chai.expect;
+    expect        = chai.expect,
+    _             = require('lodash');
 
 chai.use(require('sinon-chai'));
 require('mocha-sinon');
@@ -42,13 +43,15 @@ describe('msbuild-finder', function () {
   });
 
   it('should use 64bit msbuild on 64bit windows', function () {
+    process.env['ProgramFiles(x86)'] = true;
+    var defaults = JSON.parse(JSON.stringify(constants.DEFAULTS));
+
     var windir = 'WINDIR';
     var toolsVersion = 3.5;
-    process.env['ProgramFiles(x86)'] = true;
-    var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion, windir: windir });
+    var result = msbuildFinder.find(_.extend(defaults, { platform: 'win32', toolsVersion: toolsVersion, windir: windir }));
 
     var expectMSBuildVersion = constants.MSBUILD_VERSIONS[toolsVersion];
-    var expectedResult = windir + '/Microsoft.Net/Framework/' + expectMSBuildVersion + '/MSBuild.exe';
+    var expectedResult = windir + '/Microsoft.Net/Framework64/' + expectMSBuildVersion + '/MSBuild.exe';
 
     expect(result).to.be.equal(expectedResult);
   });
