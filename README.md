@@ -95,7 +95,7 @@ properties: { Configuration: 'Debug' }
 
 **Default:** 4.0
 
-**Possible Values:** 1.0, 1.1, 2.0, 3.5, 4.0, 12.0
+**Possible Values:** 1.0, 1.1, 2.0, 3.5, 4.0, 12.0, 14.0
 
 #### properties
 
