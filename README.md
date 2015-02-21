@@ -97,6 +97,19 @@ properties: { Configuration: 'Debug' }
 
 **Possible Values:** 1.0, 1.1, 2.0, 3.5, 4.0, 12.0, 14.0
 
+#### architecture
+
+> Specify the Architecture
+
+**Default:** Auto-detected
+
+**Possible Values:** x86, x64
+
+**Example:**
+```javascript
+msbuild({ architecutre: 'x86' })
+```
+
 #### properties
 
 > Specify Custom Build Properties
