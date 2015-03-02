@@ -146,6 +146,23 @@ msbuild({ properties: { WarningLevel: 2 } })
 
 **Default:** false
 
+#### fileLoggerParameters
+
+> Specify the parameters for the MSBuild File Logger.
+
+**Default:** None
+
+**Example:**
+```javascript
+msbuild({ fileLoggerParameters: 'LogFile=Build.log;Append;Verbosity=diagnostic' })
+```
+
+#### consoleLoggerParameters
+
+> Specify the parameters for the MSBuild Console Logger. (See fileLoggerParameters for a usage example)
+
+**Default:** None
+
 ### MSBuild Command-Line Reference
 
 For a more detailed description of each MSBuild Option see the [MSBuild Command-Line Reference](http://msdn.microsoft.com/en-us/library/ms164311.aspx)
