@@ -62,6 +62,11 @@ gulp.task("default", function() {
 
 **Default:** false
 
+#### logCommand
+
+> Logs the msbuild command that will be executed.
+
+**Default:** false
 
 #### maxBuffer
 

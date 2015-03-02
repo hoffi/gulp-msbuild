@@ -35,7 +35,7 @@ describe('msbuild-runner', function () {
       };
     });
 
-    this.sinon.stub(commandBuilder, 'construct').returns('');
+    this.sinon.stub(commandBuilder, 'construct').returns('msbuild /nologo');
     this.sinon.stub(gutil, 'log');
   });
 
@@ -46,7 +46,15 @@ describe('msbuild-runner', function () {
       done();
     });
 
-    expect(childProcess.exec).to.have.been.calledWith('', { maxBuffer: defaults.maxBuffer });
+    expect(childProcess.exec).to.have.been.calledWith('msbuild /nologo', { maxBuffer: defaults.maxBuffer });
+  });
+
+  it('should log the command when the logCommand option is set', function(done) {
+    defaults.logCommand = true;
+    msbuildRunner.startMsBuildTask(defaults, {}, function () {
+      expect(gutil.log).to.have.been.calledWith('Using msbuild command: msbuild /nologo');
+      done();
+    });
   });
 
   it('should log the error when the msbuild command failed', function (done) {
