@@ -112,7 +112,7 @@ properties: { Configuration: 'Debug' }
 
 **Example:**
 ```javascript
-msbuild({ architecutre: 'x86' })
+msbuild({ architecture: 'x86' })
 ```
 
 #### properties
