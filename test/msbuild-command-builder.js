@@ -76,6 +76,22 @@ describe('msbuild-command-builder', function () {
 
       expect(result).to.be.equal('/target:Rebuild /verbosity:normal /toolsversion:4.0 /nologo /property:Configuration="Debug"');
     });
+
+    it('should use fileLoggerParameters when specified', function () {
+      var options = defaults;
+      options.fileLoggerParameters = 'LogFile=Build.log';
+      var result = commandBuilder.buildArguments(options);
+
+      expect(result).to.be.equal('/target:Rebuild /verbosity:normal /toolsversion:4.0 /nologo /flp:LogFile=Build.log /property:Configuration="Release"');
+    });
+
+    it('should use consoleLoggerParameters when specified', function () {
+      var options = defaults;
+      options.consoleLoggerParameters = 'Verbosity=minimal';
+      var result = commandBuilder.buildArguments(options);
+
+      expect(result).to.be.equal('/target:Rebuild /verbosity:normal /toolsversion:4.0 /nologo /clp:Verbosity=minimal /property:Configuration="Release"');
+    });
   });
 
 

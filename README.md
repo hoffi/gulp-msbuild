@@ -21,7 +21,7 @@ var gulp = require("gulp");
 var msbuild = require("gulp-msbuild");
 
 gulp.task("default", function() {
-	gulp.src("./project.sln")
+	return gulp.src("./project.sln")
 		.pipe(msbuild());
 });
 ```
@@ -35,7 +35,7 @@ var gulp = require("gulp");
 var msbuild = require("gulp-msbuild");
 
 gulp.task("default", function() {
-	gulp.src("./project.sln")
+	return gulp.src("./project.sln")
 		.pipe(msbuild({
 			targets: ['Clean', 'Build'],
 			toolsVersion: 3.5
@@ -62,6 +62,11 @@ gulp.task("default", function() {
 
 **Default:** false
 
+#### logCommand
+
+> Logs the msbuild command that will be executed.
+
+**Default:** false
 
 #### maxBuffer
 
@@ -95,7 +100,20 @@ properties: { Configuration: 'Debug' }
 
 **Default:** 4.0
 
-**Possible Values:** 1.0, 1.1, 2.0, 3.5, 4.0, 12.0
+**Possible Values:** 1.0, 1.1, 2.0, 3.5, 4.0, 12.0, 14.0
+
+#### architecture
+
+> Specify the Architecture
+
+**Default:** Auto-detected
+
+**Possible Values:** x86, x64
+
+**Example:**
+```javascript
+msbuild({ architecture: 'x86' })
+```
 
 #### properties
 
@@ -129,6 +147,23 @@ msbuild({ properties: { WarningLevel: 2 } })
 
 **Default:** false
 
+#### fileLoggerParameters
+
+> Specify the parameters for the MSBuild File Logger.
+
+**Default:** None
+
+**Example:**
+```javascript
+msbuild({ fileLoggerParameters: 'LogFile=Build.log;Append;Verbosity=diagnostic' })
+```
+
+#### consoleLoggerParameters
+
+> Specify the parameters for the MSBuild Console Logger. (See fileLoggerParameters for a usage example)
+
+**Default:** None
+
 ### MSBuild Command-Line Reference
 
 For a more detailed description of each MSBuild Option see the [MSBuild Command-Line Reference](http://msdn.microsoft.com/en-us/library/ms164311.aspx)
@@ -140,8 +175,8 @@ For a more detailed description of each MSBuild Option see the [MSBuild Command-
 [travis-url]: http://travis-ci.org/hoffi/gulp-msbuild
 [travis-image]: https://secure.travis-ci.org/hoffi/gulp-msbuild.png?branch=master
 
-[coveralls-url]: https://coveralls.io/r/hoffi/gulp-msbuild
-[coveralls-image]: https://coveralls.io/repos/hoffi/gulp-msbuild/badge.png
+[coveralls-url]: https://coveralls.io/r/hoffi/gulp-msbuild?branch=master
+[coveralls-image]: https://img.shields.io/coveralls/hoffi/gulp-msbuild.svg
 
 [depstat-url]: https://david-dm.org/hoffi/gulp-msbuild
 [depstat-image]: https://david-dm.org/hoffi/gulp-msbuild.png

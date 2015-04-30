@@ -3,7 +3,8 @@
 
 var chai          = require('chai'),
     constants     = require('../lib/constants'),
-    expect        = chai.expect;
+    expect        = chai.expect,
+    _             = require('lodash');
 
 chai.use(require('sinon-chai'));
 require('mocha-sinon');
@@ -41,7 +42,21 @@ describe('msbuild-finder', function () {
     expect(result).to.be.equal(expectedResult);
   });
 
-  it('should use 64bit msbuild on windows with x64', function () {
+  it('should use 64bit msbuild on 64bit windows', function () {
+    process.env['ProgramFiles(x86)'] = true;
+    var defaults = JSON.parse(JSON.stringify(constants.DEFAULTS));
+
+    var windir = 'WINDIR';
+    var toolsVersion = 3.5;
+    var result = msbuildFinder.find(_.extend(defaults, { platform: 'win32', toolsVersion: toolsVersion, windir: windir }));
+
+    var expectMSBuildVersion = constants.MSBUILD_VERSIONS[toolsVersion];
+    var expectedResult = windir + '/Microsoft.Net/Framework64/' + expectMSBuildVersion + '/MSBuild.exe';
+
+    expect(result).to.be.equal(expectedResult);
+  });
+
+  it('should use 64bit msbuild on windows with provided x64 architecture', function () {
     var windir = 'WINDIR';
     var toolsVersion = 3.5;
     var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion, windir: windir, architecture: 'x64' });
@@ -64,6 +79,26 @@ describe('msbuild-finder', function () {
 
   it('should use 64bit msbuild 12 on windows x64 with visual studio 2013 project', function () {
     var toolsVersion = 12.0;
+    var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion, architecture: 'x64' });
+
+    var expectMSBuildVersion = constants.MSBUILD_VERSIONS[toolsVersion];
+    var expectedResult = 'C:/Program Files (x86)/MSBuild/' + expectMSBuildVersion + '/Bin/MSBuild.exe';
+
+    expect(result).to.be.equal(expectedResult);
+  });
+
+  it('should use msbuild 14 on windows with visual studio 2015 project', function () {
+    var toolsVersion = 14.0;
+    var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion });
+
+    var expectMSBuildVersion = constants.MSBUILD_VERSIONS[toolsVersion];
+    var expectedResult = 'C:/Program Files/MSBuild/' + expectMSBuildVersion + '/Bin/MSBuild.exe';
+
+    expect(result).to.be.equal(expectedResult);
+  });
+
+  it('should use 64bit msbuild 14 on windows x64 with visual studio 2015 project', function () {
+    var toolsVersion = 14.0;
     var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion, architecture: 'x64' });
 
     var expectMSBuildVersion = constants.MSBUILD_VERSIONS[toolsVersion];
