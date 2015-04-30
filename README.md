@@ -139,6 +139,7 @@ msbuild({ properties: { WarningLevel: 2 } })
 > Specify Maximal CPU-Count to use
 
 **Default:** 0 = Automatic selection
+
 **Possible Values:** -1 (MSBuild Default), 0 (Automatic), > 0 (Concrete value)
 
 #### nologo
