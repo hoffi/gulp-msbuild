@@ -4,7 +4,8 @@
 var chai          = require('chai'),
     constants     = require('../lib/constants'),
     expect        = chai.expect,
-    _             = require('lodash');
+    _             = require('lodash'),
+    path          = require('path');
 
 chai.use(require('sinon-chai'));
 require('mocha-sinon');
@@ -37,7 +38,7 @@ describe('msbuild-finder', function () {
     var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion, windir: windir });
 
     var expectMSBuildVersion = constants.MSBUILD_VERSIONS[toolsVersion];
-    var expectedResult = windir + '/Microsoft.Net/Framework/' + expectMSBuildVersion + '/MSBuild.exe';
+    var expectedResult = path.join(windir, 'Microsoft.Net', 'Framework', expectMSBuildVersion, 'MSBuild.exe');
 
     expect(result).to.be.equal(expectedResult);
   });
@@ -51,7 +52,7 @@ describe('msbuild-finder', function () {
     var result = msbuildFinder.find(_.extend(defaults, { platform: 'win32', toolsVersion: toolsVersion, windir: windir }));
 
     var expectMSBuildVersion = constants.MSBUILD_VERSIONS[toolsVersion];
-    var expectedResult = windir + '/Microsoft.Net/Framework64/' + expectMSBuildVersion + '/MSBuild.exe';
+    var expectedResult = path.join(windir, 'Microsoft.Net', 'Framework64', expectMSBuildVersion, 'MSBuild.exe');
 
     expect(result).to.be.equal(expectedResult);
   });
@@ -62,7 +63,7 @@ describe('msbuild-finder', function () {
     var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion, windir: windir, architecture: 'x64' });
 
     var expectMSBuildVersion = constants.MSBUILD_VERSIONS[toolsVersion];
-    var expectedResult = windir + '/Microsoft.Net/Framework64/' + expectMSBuildVersion + '/MSBuild.exe';
+    var expectedResult = path.join(windir, 'Microsoft.Net', 'Framework64', expectMSBuildVersion, 'MSBuild.exe');
 
     expect(result).to.be.equal(expectedResult);
   });
@@ -72,7 +73,7 @@ describe('msbuild-finder', function () {
     var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion });
 
     var expectMSBuildVersion = constants.MSBUILD_VERSIONS[toolsVersion];
-    var expectedResult = 'C:/Program Files/MSBuild/' + expectMSBuildVersion + '/Bin/MSBuild.exe';
+    var expectedResult = path.join('C:', 'Program Files', 'MSBuild', expectMSBuildVersion, 'Bin', 'MSBuild.exe');
 
     expect(result).to.be.equal(expectedResult);
   });
@@ -82,7 +83,7 @@ describe('msbuild-finder', function () {
     var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion, architecture: 'x64' });
 
     var expectMSBuildVersion = constants.MSBUILD_VERSIONS[toolsVersion];
-    var expectedResult = 'C:/Program Files (x86)/MSBuild/' + expectMSBuildVersion + '/Bin/MSBuild.exe';
+    var expectedResult = path.join('C:', 'Program Files (x86)', 'MSBuild', expectMSBuildVersion, 'Bin', 'MSBuild.exe');
 
     expect(result).to.be.equal(expectedResult);
   });
@@ -92,7 +93,7 @@ describe('msbuild-finder', function () {
     var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion });
 
     var expectMSBuildVersion = constants.MSBUILD_VERSIONS[toolsVersion];
-    var expectedResult = 'C:/Program Files/MSBuild/' + expectMSBuildVersion + '/Bin/MSBuild.exe';
+    var expectedResult = path.join('C:', 'Program Files', 'MSBuild', expectMSBuildVersion, 'Bin', 'MSBuild.exe');
 
     expect(result).to.be.equal(expectedResult);
   });
@@ -102,7 +103,7 @@ describe('msbuild-finder', function () {
     var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion, architecture: 'x64' });
 
     var expectMSBuildVersion = constants.MSBUILD_VERSIONS[toolsVersion];
-    var expectedResult = 'C:/Program Files (x86)/MSBuild/' + expectMSBuildVersion + '/Bin/MSBuild.exe';
+    var expectedResult = path.join('C:', 'Program Files (x86)', 'MSBuild/', expectMSBuildVersion, 'Bin', 'MSBuild.exe');
 
     expect(result).to.be.equal(expectedResult);
   });

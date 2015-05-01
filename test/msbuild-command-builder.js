@@ -26,7 +26,7 @@ describe('msbuild-command-builder', function () {
     it('should build arguments with default options', function () {
       var result = commandBuilder.buildArguments(defaults);
 
-      expect(result).to.be.equal('/target:Rebuild /verbosity:normal /toolsversion:4.0 /nologo /property:Configuration="Release"');
+      expect(result).to.be.equal('/target:Rebuild /verbosity:normal /toolsversion:4.0 /nologo /maxcpucount /property:Configuration="Release"');
     });
 
     it('should build arguments without nologo', function () {
@@ -34,10 +34,25 @@ describe('msbuild-command-builder', function () {
       options.nologo = undefined;
       var result = commandBuilder.buildArguments(options);
 
-      expect(result).to.be.equal('/target:Rebuild /verbosity:normal /toolsversion:4.0 /property:Configuration="Release"');
+      expect(result).to.be.equal('/target:Rebuild /verbosity:normal /toolsversion:4.0 /maxcpucount /property:Configuration="Release"');
     });
 
-    it('should build arguments with maxcpucount', function () {
+    it('should build arguments with maxcpucount by default', function () {
+      var options = defaults;
+      var result = commandBuilder.buildArguments(options);
+
+      expect(result).to.be.equal('/target:Rebuild /verbosity:normal /toolsversion:4.0 /nologo /maxcpucount /property:Configuration="Release"');
+    });
+
+    it('should build arguments with maxcpucount equal zero', function () {
+      var options = defaults;
+      options.maxcpucount = 0;
+      var result = commandBuilder.buildArguments(options);
+
+      expect(result).to.be.equal('/target:Rebuild /verbosity:normal /toolsversion:4.0 /nologo /maxcpucount /property:Configuration="Release"');
+    });
+
+    it('should build arguments with positive maxcpucount', function () {
       var options = defaults;
       options.maxcpucount = 4;
       var result = commandBuilder.buildArguments(options);
@@ -45,7 +60,7 @@ describe('msbuild-command-builder', function () {
       expect(result).to.be.equal('/target:Rebuild /verbosity:normal /toolsversion:4.0 /nologo /maxcpucount:4 /property:Configuration="Release"');
     });
 
-    it('should build arguments with maxcpucount under zero', function () {
+    it('should build arguments with negative maxcpucount', function () {
       var options = defaults;
       options.maxcpucount = -1;
       var result = commandBuilder.buildArguments(options);
@@ -58,7 +73,7 @@ describe('msbuild-command-builder', function () {
       options.properties = { WarningLevel: 2 };
       var result = commandBuilder.buildArguments(options);
 
-      expect(result).to.be.equal('/target:Rebuild /verbosity:normal /toolsversion:4.0 /nologo /property:Configuration="Release" /property:WarningLevel="2"');
+      expect(result).to.be.equal('/target:Rebuild /verbosity:normal /toolsversion:4.0 /nologo /maxcpucount /property:Configuration="Release" /property:WarningLevel="2"');
     });
 
     it('should add Configuration Property when Configuration-Option is specified', function () {
@@ -66,7 +81,7 @@ describe('msbuild-command-builder', function () {
       options.configuration = 'Debug';
       var result = commandBuilder.buildArguments(options);
 
-      expect(result).to.be.equal('/target:Rebuild /verbosity:normal /toolsversion:4.0 /nologo /property:Configuration="Debug"');
+      expect(result).to.be.equal('/target:Rebuild /verbosity:normal /toolsversion:4.0 /nologo /maxcpucount /property:Configuration="Debug"');
     });
 
     it('should use Configuration Property in the custom properties list when specified', function () {
@@ -74,7 +89,7 @@ describe('msbuild-command-builder', function () {
       options.properties = { Configuration: 'Debug' };
       var result = commandBuilder.buildArguments(options);
 
-      expect(result).to.be.equal('/target:Rebuild /verbosity:normal /toolsversion:4.0 /nologo /property:Configuration="Debug"');
+      expect(result).to.be.equal('/target:Rebuild /verbosity:normal /toolsversion:4.0 /nologo /maxcpucount /property:Configuration="Debug"');
     });
 
     it('should use fileLoggerParameters when specified', function () {
@@ -82,7 +97,7 @@ describe('msbuild-command-builder', function () {
       options.fileLoggerParameters = 'LogFile=Build.log';
       var result = commandBuilder.buildArguments(options);
 
-      expect(result).to.be.equal('/target:Rebuild /verbosity:normal /toolsversion:4.0 /nologo /flp:LogFile=Build.log /property:Configuration="Release"');
+      expect(result).to.be.equal('/target:Rebuild /verbosity:normal /toolsversion:4.0 /nologo /flp:LogFile=Build.log /maxcpucount /property:Configuration="Release"');
     });
 
     it('should use consoleLoggerParameters when specified', function () {
@@ -90,7 +105,7 @@ describe('msbuild-command-builder', function () {
       options.consoleLoggerParameters = 'Verbosity=minimal';
       var result = commandBuilder.buildArguments(options);
 
-      expect(result).to.be.equal('/target:Rebuild /verbosity:normal /toolsversion:4.0 /nologo /clp:Verbosity=minimal /property:Configuration="Release"');
+      expect(result).to.be.equal('/target:Rebuild /verbosity:normal /toolsversion:4.0 /nologo /clp:Verbosity=minimal /maxcpucount /property:Configuration="Release"');
     });
   });
 
