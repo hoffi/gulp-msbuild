@@ -144,7 +144,7 @@ msbuild({ properties: { WarningLevel: 2 } })
 
 #### nologo
 
-> Should Startup Banner or Copyright Message be shown?
+> Suppress Startup Banner and Copyright Message of MSBuild
 
 **Default:** false
 
