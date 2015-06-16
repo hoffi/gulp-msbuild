@@ -10,7 +10,7 @@ function mergeOptionsWithDefaults(options) {
 }
 
 module.exports = function(options) {
-  options = mergeOptionsWithDefaults(options);
+  var mergedOptions = _.cloneDeep(mergeOptionsWithDefaults(options));
 
   var stream = through.obj(function(file, enc, callback) {
     var self = this;
@@ -19,7 +19,7 @@ module.exports = function(options) {
       return callback();
     }
 
-    return msbuildRunner.startMsBuildTask(options, file, function(err) {
+    return msbuildRunner.startMsBuildTask(mergedOptions, file, function(err) {
       if (err) return callback(err);
       self.push(file);
       return callback();
