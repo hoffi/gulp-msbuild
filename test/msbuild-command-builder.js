@@ -68,6 +68,15 @@ describe('msbuild-command-builder', function () {
       expect(result).to.be.equal('"/target:Rebuild" /verbosity:normal /toolsversion:4.0 /nologo /property:Configuration="Release"');
     });
 
+    it('should build arguments excluding maxcpucount when using xbuild', function () {
+      var options = defaults;
+      options.maxcpucount = 4;
+      options.msbuildPath = 'xbuild';
+      var result = commandBuilder.buildArguments(options);
+
+      expect(result).to.be.equal('"/target:Rebuild" /verbosity:normal /toolsversion:4.0 /nologo /property:Configuration="Release"');
+    });
+
     it('should build arguments with custom properties', function () {
       var options = defaults;
       options.properties = { WarningLevel: 2 };
