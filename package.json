@@ -29,7 +29,8 @@
     "istanbul": "*",
     "mocha-sinon": "^1.1.2",
     "sinon-chai": "^2.5.0",
-    "chai": "^3.4.0"
+    "chai": "^3.4.0",
+    "sinon": ">=1.4.0 <2"
   },
   "engines": {
     "node": ">=0.8.0",
