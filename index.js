@@ -14,7 +14,7 @@ module.exports = function(options) {
 
   var stream = through.obj(function(file, enc, callback) {
     var self = this;
-    if (file.isNull()) {
+    if (file && file.path) {
       self.push(file);
       return callback();
     }
