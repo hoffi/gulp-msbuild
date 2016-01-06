@@ -73,7 +73,9 @@ describe('msbuild-finder', function () {
     var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion });
 
     var expectMSBuildVersion = constants.MSBUILD_VERSIONS[toolsVersion];
-    var expectedResult = path.join(process.env['ProgramFiles'], 'MSBuild', expectMSBuildVersion, 'Bin', 'MSBuild.exe');
+
+    var pathRoot = process.env['ProgramFiles'] || path.join('C:', 'Program Files');
+    var expectedResult = path.join(pathRoot, 'MSBuild', expectMSBuildVersion, 'Bin', 'MSBuild.exe');
 
     expect(result).to.be.equal(expectedResult);
   });
@@ -93,7 +95,9 @@ describe('msbuild-finder', function () {
     var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion });
 
     var expectMSBuildVersion = constants.MSBUILD_VERSIONS[toolsVersion];
-    var expectedResult = path.join(process.env['ProgramFiles'], 'MSBuild', expectMSBuildVersion, 'Bin', 'MSBuild.exe');
+
+    var pathRoot = process.env['ProgramFiles'] || path.join('C:', 'Program Files');
+    var expectedResult = path.join(pathRoot, 'MSBuild', expectMSBuildVersion, 'Bin', 'MSBuild.exe');
 
     expect(result).to.be.equal(expectedResult);
   });
