@@ -73,7 +73,9 @@ describe('msbuild-finder', function () {
     var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion });
 
     var expectMSBuildVersion = constants.MSBUILD_VERSIONS[toolsVersion];
-    var expectedResult = path.join('C:', 'Program Files', 'MSBuild', expectMSBuildVersion, 'Bin', 'MSBuild.exe');
+
+    var pathRoot = process.env['ProgramFiles'] || path.join('C:', 'Program Files');
+    var expectedResult = path.join(pathRoot, 'MSBuild', expectMSBuildVersion, 'Bin', 'MSBuild.exe');
 
     expect(result).to.be.equal(expectedResult);
   });
@@ -83,7 +85,7 @@ describe('msbuild-finder', function () {
     var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion, architecture: 'x64' });
 
     var expectMSBuildVersion = constants.MSBUILD_VERSIONS[toolsVersion];
-    var expectedResult = path.join('C:', 'Program Files (x86)', 'MSBuild', expectMSBuildVersion, 'Bin', 'MSBuild.exe');
+    var expectedResult = path.join(process.env['ProgramFiles(x86)'], 'MSBuild', expectMSBuildVersion, 'Bin', 'MSBuild.exe');
 
     expect(result).to.be.equal(expectedResult);
   });
@@ -93,7 +95,9 @@ describe('msbuild-finder', function () {
     var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion });
 
     var expectMSBuildVersion = constants.MSBUILD_VERSIONS[toolsVersion];
-    var expectedResult = path.join('C:', 'Program Files', 'MSBuild', expectMSBuildVersion, 'Bin', 'MSBuild.exe');
+
+    var pathRoot = process.env['ProgramFiles'] || path.join('C:', 'Program Files');
+    var expectedResult = path.join(pathRoot, 'MSBuild', expectMSBuildVersion, 'Bin', 'MSBuild.exe');
 
     expect(result).to.be.equal(expectedResult);
   });
@@ -103,7 +107,7 @@ describe('msbuild-finder', function () {
     var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion, architecture: 'x64' });
 
     var expectMSBuildVersion = constants.MSBUILD_VERSIONS[toolsVersion];
-    var expectedResult = path.join('C:', 'Program Files (x86)', 'MSBuild/', expectMSBuildVersion, 'Bin', 'MSBuild.exe');
+    var expectedResult = path.join(process.env['ProgramFiles(x86)'], 'MSBuild/', expectMSBuildVersion, 'Bin', 'MSBuild.exe');
 
     expect(result).to.be.equal(expectedResult);
   });
