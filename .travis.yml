@@ -1,9 +1,9 @@
 language: node_js
 sudo: false
 node_js:
-  - '0.12.7'
-  - '4.2.2'
-  - '5.1.0'
+  - '0.12.9'
+  - '4.2.4'
+  - '5.4.0'
 after_script:
   - npm run coveralls
 env:
