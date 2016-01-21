@@ -106,7 +106,7 @@ describe('msbuild-command-builder', function () {
       options.fileLoggerParameters = 'LogFile=Build.log';
       var result = commandBuilder.buildArguments(options);
 
-      expect(result).to.be.equal('"/target:Rebuild" /verbosity:normal /toolsversion:4.0 /nologo /flp:LogFile=Build.log /maxcpucount /property:Configuration="Release"');
+      expect(result).to.be.equal('"/target:Rebuild" /verbosity:normal /toolsversion:4.0 /nologo "/flp:LogFile=Build.log" /maxcpucount /property:Configuration="Release"');
     });
 
     it('should use consoleLoggerParameters when specified', function () {
@@ -114,7 +114,7 @@ describe('msbuild-command-builder', function () {
       options.consoleLoggerParameters = 'Verbosity=minimal';
       var result = commandBuilder.buildArguments(options);
 
-      expect(result).to.be.equal('"/target:Rebuild" /verbosity:normal /toolsversion:4.0 /nologo /clp:Verbosity=minimal /maxcpucount /property:Configuration="Release"');
+      expect(result).to.be.equal('"/target:Rebuild" /verbosity:normal /toolsversion:4.0 /nologo "/clp:Verbosity=minimal" /maxcpucount /property:Configuration="Release"');
     });
   });
 
