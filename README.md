@@ -145,6 +145,14 @@ msbuild({ properties: { WarningLevel: 2 } })
 
 **Possible Values:** -1 (MSBuild Default), 0 (Automatic), > 0 (Concrete value)
 
+#### nodeReuse
+
+> Specify whether to enable or disable the re-use of MSBuild nodes
+
+**Default:** true = Nodes remain after the build finishes so that subsequent builds can use them
+
+**Possible Values:** true (MSBuild Default), false
+
 #### nologo
 
 > Suppress Startup Banner and Copyright Message of MSBuild
