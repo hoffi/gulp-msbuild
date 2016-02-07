@@ -176,6 +176,17 @@ msbuild({ fileLoggerParameters: 'LogFile=Build.log;Append;Verbosity=diagnostic' 
 
 **Default:** None
 
+#### loggerParameters
+
+> Specify the parameters for the MSBuild Logger.
+
+**Default:** None
+
+**Example:**
+```javascript
+msbuild({ loggerParameters: 'XMLLogger,./MyLogger.dll;OutputAsHTML' })
+```
+
 ### MSBuild Command-Line Reference
 
 For a more detailed description of each MSBuild Option see the [MSBuild Command-Line Reference](http://msdn.microsoft.com/en-us/library/ms164311.aspx)

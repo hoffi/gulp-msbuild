@@ -117,6 +117,14 @@ describe('msbuild-command-builder', function () {
       expect(result).to.be.equal('"/target:Rebuild" /verbosity:normal /toolsversion:4.0 /nologo "/clp:Verbosity=minimal" /maxcpucount /property:Configuration="Release"');
     });
 
+    it('should use loggerParameters when specified', function () {
+      var options = defaults;
+      options.loggerParameters = 'XMLLogger,./MyLogger.dll;OutputAsHTML';
+      var result = commandBuilder.buildArguments(options);
+
+      expect(result).to.be.equal('"/target:Rebuild" /verbosity:normal /toolsversion:4.0 /nologo "/logger:XMLLogger,./MyLogger.dll;OutputAsHTML" /maxcpucount /property:Configuration="Release"');
+    });
+
     it('should build arguments /nodeReuse:False when specified', function () {
       var options = defaults;
       options.nodeReuse = false;
