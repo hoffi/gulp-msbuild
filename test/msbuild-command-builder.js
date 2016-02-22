@@ -26,7 +26,7 @@ describe('msbuild-command-builder', function () {
     it('should build arguments with default options', function () {
       var result = commandBuilder.buildArguments(defaults);
 
-      expect(result).to.be.equal('"/target:Rebuild" /verbosity:normal /toolsversion:4.0 /nologo /maxcpucount /property:Configuration="Release"');
+      expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/nologo', '/maxcpucount', '/property:Configuration=Release']);
     });
 
     it('should build arguments without nologo', function () {
@@ -34,14 +34,14 @@ describe('msbuild-command-builder', function () {
       options.nologo = undefined;
       var result = commandBuilder.buildArguments(options);
 
-      expect(result).to.be.equal('"/target:Rebuild" /verbosity:normal /toolsversion:4.0 /maxcpucount /property:Configuration="Release"');
+      expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/maxcpucount', '/property:Configuration=Release']);
     });
 
     it('should build arguments with maxcpucount by default', function () {
       var options = defaults;
       var result = commandBuilder.buildArguments(options);
 
-      expect(result).to.be.equal('"/target:Rebuild" /verbosity:normal /toolsversion:4.0 /nologo /maxcpucount /property:Configuration="Release"');
+      expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/nologo', '/maxcpucount', '/property:Configuration=Release']);
     });
 
     it('should build arguments with maxcpucount equal zero', function () {
@@ -49,7 +49,7 @@ describe('msbuild-command-builder', function () {
       options.maxcpucount = 0;
       var result = commandBuilder.buildArguments(options);
 
-      expect(result).to.be.equal('"/target:Rebuild" /verbosity:normal /toolsversion:4.0 /nologo /maxcpucount /property:Configuration="Release"');
+      expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/nologo', '/maxcpucount', '/property:Configuration=Release']);
     });
 
     it('should build arguments with positive maxcpucount', function () {
@@ -57,7 +57,7 @@ describe('msbuild-command-builder', function () {
       options.maxcpucount = 4;
       var result = commandBuilder.buildArguments(options);
 
-      expect(result).to.be.equal('"/target:Rebuild" /verbosity:normal /toolsversion:4.0 /nologo /maxcpucount:4 /property:Configuration="Release"');
+      expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/nologo', '/maxcpucount:4', '/property:Configuration=Release']);
     });
 
     it('should build arguments with negative maxcpucount', function () {
@@ -65,7 +65,7 @@ describe('msbuild-command-builder', function () {
       options.maxcpucount = -1;
       var result = commandBuilder.buildArguments(options);
 
-      expect(result).to.be.equal('"/target:Rebuild" /verbosity:normal /toolsversion:4.0 /nologo /property:Configuration="Release"');
+      expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/nologo', '/property:Configuration=Release']);
     });
 
     it('should build arguments excluding maxcpucount when using xbuild', function () {
@@ -74,7 +74,7 @@ describe('msbuild-command-builder', function () {
       options.msbuildPath = 'xbuild';
       var result = commandBuilder.buildArguments(options);
 
-      expect(result).to.be.equal('"/target:Rebuild" /verbosity:normal /toolsversion:4.0 /nologo /property:Configuration="Release"');
+      expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/nologo', '/property:Configuration=Release']);
     });
 
     it('should build arguments with custom properties', function () {
@@ -82,7 +82,7 @@ describe('msbuild-command-builder', function () {
       options.properties = { WarningLevel: 2 };
       var result = commandBuilder.buildArguments(options);
 
-      expect(result).to.be.equal('"/target:Rebuild" /verbosity:normal /toolsversion:4.0 /nologo /maxcpucount /property:Configuration="Release" /property:WarningLevel="2"');
+      expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/nologo', '/maxcpucount', '/property:Configuration=Release', '/property:WarningLevel=2']);
     });
 
     it('should add Configuration Property when Configuration-Option is specified', function () {
@@ -90,7 +90,7 @@ describe('msbuild-command-builder', function () {
       options.configuration = 'Debug';
       var result = commandBuilder.buildArguments(options);
 
-      expect(result).to.be.equal('"/target:Rebuild" /verbosity:normal /toolsversion:4.0 /nologo /maxcpucount /property:Configuration="Debug"');
+      expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/nologo', '/maxcpucount', '/property:Configuration=Debug']);
     });
 
     it('should use Configuration Property in the custom properties list when specified', function () {
@@ -98,7 +98,7 @@ describe('msbuild-command-builder', function () {
       options.properties = { Configuration: 'Debug' };
       var result = commandBuilder.buildArguments(options);
 
-      expect(result).to.be.equal('"/target:Rebuild" /verbosity:normal /toolsversion:4.0 /nologo /maxcpucount /property:Configuration="Debug"');
+      expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/nologo', '/maxcpucount', '/property:Configuration=Debug']);
     });
 
     it('should use fileLoggerParameters when specified', function () {
@@ -106,7 +106,7 @@ describe('msbuild-command-builder', function () {
       options.fileLoggerParameters = 'LogFile=Build.log';
       var result = commandBuilder.buildArguments(options);
 
-      expect(result).to.be.equal('"/target:Rebuild" /verbosity:normal /toolsversion:4.0 /nologo "/flp:LogFile=Build.log" /maxcpucount /property:Configuration="Release"');
+      expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/nologo', '/flp:LogFile=Build.log', '/maxcpucount', '/property:Configuration=Release']);
     });
 
     it('should use consoleLoggerParameters when specified', function () {
@@ -114,7 +114,7 @@ describe('msbuild-command-builder', function () {
       options.consoleLoggerParameters = 'Verbosity=minimal';
       var result = commandBuilder.buildArguments(options);
 
-      expect(result).to.be.equal('"/target:Rebuild" /verbosity:normal /toolsversion:4.0 /nologo "/clp:Verbosity=minimal" /maxcpucount /property:Configuration="Release"');
+      expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/nologo', '/clp:Verbosity=minimal', '/maxcpucount', '/property:Configuration=Release']);
     });
 
     it('should use loggerParameters when specified', function () {
@@ -122,7 +122,7 @@ describe('msbuild-command-builder', function () {
       options.loggerParameters = 'XMLLogger,./MyLogger.dll;OutputAsHTML';
       var result = commandBuilder.buildArguments(options);
 
-      expect(result).to.be.equal('"/target:Rebuild" /verbosity:normal /toolsversion:4.0 /nologo "/logger:XMLLogger,./MyLogger.dll;OutputAsHTML" /maxcpucount /property:Configuration="Release"');
+      expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/nologo', '/logger:XMLLogger,./MyLogger.dll;OutputAsHTML', '/maxcpucount', '/property:Configuration=Release']);
     });
 
     it('should build arguments /nodeReuse:False when specified', function () {
@@ -130,7 +130,7 @@ describe('msbuild-command-builder', function () {
       options.nodeReuse = false;
       var result = commandBuilder.buildArguments(options);
 
-      expect(result).to.be.equal('"/target:Rebuild" /verbosity:normal /toolsversion:4.0 /nologo /maxcpucount /nodeReuse:False /property:Configuration="Release"');
+      expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/nologo', '/maxcpucount', '/nodeReuse:False', '/property:Configuration=Release']);
     });
   });
 
@@ -161,7 +161,7 @@ describe('msbuild-command-builder', function () {
       var command = commandBuilder.construct({}, options);
 
       expect(msbuildFinder.find).to.not.have.been.calledWith(options);
-      expect(command).to.be.match(/here(.+)/);
+      expect(command.executable).to.equal('here');
     });
 
     it('should construct a valid command', function () {
@@ -169,7 +169,8 @@ describe('msbuild-command-builder', function () {
       options.msbuildPath = 'here';
       var command = commandBuilder.construct({ path: 'test.sln' }, options);
 
-      expect(command).to.be.match(/"here" "test.sln" (.+)/);
+      expect(command.executable).to.equal('here');
+      expect(command.args).to.contain('test.sln');
     });
   });
 
