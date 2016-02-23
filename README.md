@@ -71,12 +71,6 @@ gulp.task("default", function() {
 
 **Default:** false
 
-#### maxBuffer
-
-> Specifies the largest amount of data allowed on stdout or stderr - if this value is exceeded then the msbuild child process is killed.
-
-**Default:** 500*1024
-
 #### targets
 
 > Specify Build Targets
