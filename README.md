@@ -89,7 +89,7 @@ gulp.task("default", function() {
 **Default:** Release
 
 **Hint:** You can also specify the Build Configuration using the *properties* option
-```json
+```js
 properties: { Configuration: 'Debug' }
 ```
 
@@ -127,7 +127,7 @@ msbuild({ properties: { WarningLevel: 2 } })
 
 #### verbosity
 
-> Specify the Build Verbosity
+> Specify the amount of information to display in the build output
 
 **Default:** normal
 
@@ -153,7 +153,7 @@ msbuild({ properties: { WarningLevel: 2 } })
 
 > Suppress Startup Banner and Copyright Message of MSBuild
 
-**Default:** false
+**Default:** false -> _Show Startup Banner and Copyright Message_
 
 #### fileLoggerParameters
 
@@ -174,7 +174,7 @@ msbuild({ fileLoggerParameters: 'LogFile=Build.log;Append;Verbosity=diagnostic' 
 
 #### loggerParameters
 
-> Specify the parameters for the MSBuild Logger.
+> Specify the parameters for a custom MSBuild Logger.
 
 **Default:** None
 
