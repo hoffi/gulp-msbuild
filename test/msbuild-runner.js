@@ -16,64 +16,115 @@ var msbuildRunner = require('../lib/msbuild-runner');
 
 var defaults;
 
-var execCallbackArg;
+var events;
+
+function simulateEvent(name) {
+  events.push({ name: name, data: Array.prototype.slice.call(arguments, 1) });
+}
 
 describe('msbuild-runner', function () {
 
   beforeEach(function () {
     defaults = JSON.parse(JSON.stringify(constants.DEFAULTS));
+    events = [];
 
-    this.sinon.stub(childProcess, 'exec', function (command, options, callback) {
-      process.nextTick(function() { callback(execCallbackArg); });
+    function spawn(command, args, options) {
+      var listeners = {};
 
-      var stream = new Stream();
-      stream.pipe = function() {};
+      process.nextTick(function() {
+        events.forEach(function(e) {
+          listeners[e.name].apply(this, e.data);
+        });
+      });
 
       return {
-        stdout: stream,
-        stderr: stream
+        on: function(name, handler) {
+          listeners[name] = handler;
+        }
       };
-    });
+    }
 
-    this.sinon.stub(commandBuilder, 'construct').returns('msbuild /nologo');
+    this.sinon.stub(childProcess, 'spawn', spawn);
+    this.sinon.stub(commandBuilder, 'construct').returns({ executable: 'msbuild', args: ['/nologo'] });
     this.sinon.stub(gutil, 'log');
   });
 
   it('should execute the msbuild command', function (done) {
     defaults.stdout = true;
+
+    simulateEvent('close', 0);
+
     msbuildRunner.startMsBuildTask(defaults, {}, function () {
       expect(gutil.log).to.have.been.calledWith(gutil.colors.cyan('Build complete!'));
       done();
     });
 
-    expect(childProcess.exec).to.have.been.calledWith('msbuild /nologo', { maxBuffer: defaults.maxBuffer });
+    expect(childProcess.spawn).to.have.been.calledWith('msbuild', ['/nologo']);
   });
 
   it('should log the command when the logCommand option is set', function(done) {
     defaults.logCommand = true;
+
+    simulateEvent('close', 0);
+
     msbuildRunner.startMsBuildTask(defaults, {}, function () {
-      expect(gutil.log).to.have.been.calledWith('Using msbuild command: msbuild /nologo');
+      expect(gutil.log).to.have.been.calledWith('Using msbuild command:', 'msbuild', '/nologo');
       done();
     });
   });
 
-  it('should log the error when the msbuild command failed', function (done) {
-    execCallbackArg = 'test';
+  it('should log an error message when the msbuild command exits with a non-zero code', function (done) {
+    simulateEvent('close', 1);
 
     msbuildRunner.startMsBuildTask(defaults, {}, function () {
-      expect(gutil.log).to.have.been.calledWith(execCallbackArg);
+      expect(gutil.log).to.have.been.calledWith(gutil.colors.red('Build failed with code 1!'));
+      done();
+    });
+  });
+
+  it('should log an error message when the msbuild command is killed by a signal', function (done) {
+    simulateEvent('close', null, 'SIGUSR1');
+
+    msbuildRunner.startMsBuildTask(defaults, {}, function () {
+      expect(gutil.log).to.have.been.calledWith(gutil.colors.red('Build killed with signal SIGUSR1!'));
+      done();
+    });
+  });
+
+  it('should log an error message and return an Error in the callback when the msbuild command failed', function (done) {
+    defaults.errorOnFail = true;
+
+    simulateEvent('close', 1);
+
+    msbuildRunner.startMsBuildTask(defaults, {}, function (err) {
+      expect(err).to.be.an.instanceof(Error);
+      expect(err.message).to.be.equal('Build failed with code 1!');
+      expect(gutil.log).to.have.been.calledWith(gutil.colors.red('Build failed with code 1!'));
+      done();
+    });
+  });
+
+  it('should log an error message when the spawned process experienced an error', function (done) {
+    var error = new Error('broken');
+
+    simulateEvent('error', error);
+
+    msbuildRunner.startMsBuildTask(defaults, {}, function () {
+      expect(gutil.log).to.have.been.calledWith(error);
       expect(gutil.log).to.have.been.calledWith(gutil.colors.red('Build failed!'));
       done();
     });
   });
 
-  it('should log the error and return the error in the callback when the msbuild command failed', function (done) {
+  it('should log an error message and return an Error in the callback when the spawned process experienced an error', function (done) {
     defaults.errorOnFail = true;
-    execCallbackArg = 'test';
+    var error = new Error('broken');
+
+    simulateEvent('error', error);
 
     msbuildRunner.startMsBuildTask(defaults, {}, function (err) {
-      expect(err).to.be.equal(execCallbackArg);
-      expect(gutil.log).to.have.been.calledWith(execCallbackArg);
+      expect(err).to.be.equal(error);
+      expect(gutil.log).to.have.been.calledWith(error);
       expect(gutil.log).to.have.been.calledWith(gutil.colors.red('Build failed!'));
       done();
     });
