@@ -31,6 +31,8 @@ gulp.task("default", function() {
 
 ### Options
 
+> If you miss any options, feel free to open an issue.
+
 __Example__
 
 ```javascript
