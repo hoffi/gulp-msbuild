@@ -55,7 +55,7 @@ describe('msbuild-runner', function () {
     simulateEvent('close', 0);
 
     msbuildRunner.startMsBuildTask(defaults, {}, function () {
-      expect(gutil.log).to.have.been.calledWith(gutil.colors.cyan('Build complete!'));
+      expect(gutil.log).to.have.been.calledWith(gutil.colors.cyan('MSBuild complete!'));
       done();
     });
 
@@ -68,7 +68,7 @@ describe('msbuild-runner', function () {
     simulateEvent('close', 0);
 
     msbuildRunner.startMsBuildTask(defaults, {}, function () {
-      expect(gutil.log).to.have.been.calledWith('Using msbuild command:', 'msbuild', '/nologo');
+      expect(gutil.log).to.have.been.calledWith(gutil.colors.cyan('Using MSBuild command:'), 'msbuild', '/nologo');
       done();
     });
   });
@@ -77,7 +77,7 @@ describe('msbuild-runner', function () {
     simulateEvent('close', 1);
 
     msbuildRunner.startMsBuildTask(defaults, {}, function () {
-      expect(gutil.log).to.have.been.calledWith(gutil.colors.red('Build failed with code 1!'));
+      expect(gutil.log).to.have.been.calledWith(gutil.colors.red('MSBuild failed with code 1!'));
       done();
     });
   });
@@ -86,7 +86,7 @@ describe('msbuild-runner', function () {
     simulateEvent('close', null, 'SIGUSR1');
 
     msbuildRunner.startMsBuildTask(defaults, {}, function () {
-      expect(gutil.log).to.have.been.calledWith(gutil.colors.red('Build killed with signal SIGUSR1!'));
+      expect(gutil.log).to.have.been.calledWith(gutil.colors.red('MSBuild killed with signal SIGUSR1!'));
       done();
     });
   });
@@ -98,8 +98,8 @@ describe('msbuild-runner', function () {
 
     msbuildRunner.startMsBuildTask(defaults, {}, function (err) {
       expect(err).to.be.an.instanceof(Error);
-      expect(err.message).to.be.equal('Build failed with code 1!');
-      expect(gutil.log).to.have.been.calledWith(gutil.colors.red('Build failed with code 1!'));
+      expect(err.message).to.be.equal('MSBuild failed with code 1!');
+      expect(gutil.log).to.have.been.calledWith(gutil.colors.red('MSBuild failed with code 1!'));
       done();
     });
   });
@@ -111,7 +111,7 @@ describe('msbuild-runner', function () {
 
     msbuildRunner.startMsBuildTask(defaults, {}, function () {
       expect(gutil.log).to.have.been.calledWith(error);
-      expect(gutil.log).to.have.been.calledWith(gutil.colors.red('Build failed!'));
+      expect(gutil.log).to.have.been.calledWith(gutil.colors.red('MSBuild failed!'));
       done();
     });
   });
@@ -125,7 +125,7 @@ describe('msbuild-runner', function () {
     msbuildRunner.startMsBuildTask(defaults, {}, function (err) {
       expect(err).to.be.equal(error);
       expect(gutil.log).to.have.been.calledWith(error);
-      expect(gutil.log).to.have.been.calledWith(gutil.colors.red('Build failed!'));
+      expect(gutil.log).to.have.been.calledWith(gutil.colors.red('MSBuild failed!'));
       done();
     });
   });
