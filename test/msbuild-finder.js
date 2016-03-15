@@ -44,7 +44,6 @@ describe('msbuild-finder', function () {
   });
 
   it('should use 64bit msbuild on 64bit windows', function () {
-    process.env['ProgramFiles(x86)'] = true;
     var defaults = JSON.parse(JSON.stringify(constants.DEFAULTS));
 
     var windir = 'WINDIR';
@@ -85,7 +84,8 @@ describe('msbuild-finder', function () {
     var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion, architecture: 'x64' });
 
     var expectMSBuildVersion = constants.MSBUILD_VERSIONS[toolsVersion];
-    var expectedResult = path.join(process.env['ProgramFiles(x86)'], 'MSBuild', expectMSBuildVersion, 'Bin', 'MSBuild.exe');
+    var pathRoot = process.env['ProgramFiles(x86)'] || path.join('C:', 'Program Files (x86)');
+    var expectedResult = path.join(pathRoot, 'MSBuild', expectMSBuildVersion, 'Bin/amd64', 'MSBuild.exe');
 
     expect(result).to.be.equal(expectedResult);
   });
@@ -107,7 +107,8 @@ describe('msbuild-finder', function () {
     var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion, architecture: 'x64' });
 
     var expectMSBuildVersion = constants.MSBUILD_VERSIONS[toolsVersion];
-    var expectedResult = path.join(process.env['ProgramFiles(x86)'], 'MSBuild/', expectMSBuildVersion, 'Bin', 'MSBuild.exe');
+    var pathRoot = process.env['ProgramFiles(x86)'] || path.join('C:', 'Program Files (x86)');
+    var expectedResult = path.join(pathRoot, 'MSBuild/', expectMSBuildVersion, 'Bin/amd64', 'MSBuild.exe');
 
     expect(result).to.be.equal(expectedResult);
   });
