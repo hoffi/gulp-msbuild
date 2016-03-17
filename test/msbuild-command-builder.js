@@ -1,177 +1,115 @@
-/*global describe, it, beforeEach*/
-'use strict';
+import test from 'ava';
+import commandBuilder from '../lib/msbuild-command-builder';
+import constants from '../lib/constants';
 
-var chai          = require('chai'),
-    constants     = require('../lib/constants'),
-    gutil         = require('gulp-util'),
-    expect        = chai.expect;
+test('correctly processes default options', t => {
+  var options = constants.DEFAULTS;
+  var result = commandBuilder.buildArguments(options);
+  t.same(result,
+         ['/target:Rebuild', '/verbosity:normal',
+          '/toolsversion:4.0', '/nologo', '/maxcpucount',
+          '/property:Configuration=Release']);
+});
 
-chai.use(require('sinon-chai'));
-require('mocha-sinon');
+test('can handle multiple targets', t => {
+  var options = { targets: ['Clean', 'Build'] };
+  var result = commandBuilder.buildArguments(options);
+  t.same(result, ['/target:Clean;Build']);
+});
 
-var commandBuilder = require('../lib/msbuild-command-builder');
-var msbuildFinder = require('../lib/msbuild-finder');
+test('can handle integer tools version', t => {
+  var options = { toolsVersion: 1 };
+  var result = commandBuilder.buildArguments(options);
+  t.same(result, ['/toolsversion:1.0']);
+});
 
-var defaults;
+test('adds nologo if set to true', t => {
+  var options = { nologo: true };
+  var result = commandBuilder.buildArguments(options);
+  t.same(result, ['/nologo']);
+});
 
-describe('msbuild-command-builder', function () {
+test('does not add nologo if set to false', t => {
+  var options = { nologo: false };
+  var result = commandBuilder.buildArguments(options);
+  t.same(result, []);
+});
 
-  beforeEach(function () {
-    defaults = JSON.parse(JSON.stringify(constants.DEFAULTS));
+test('does not add maxcpucount if using xbuild', t => {
+  var options = { msbuildPath: 'xbuild', maxcpucount: 0 };
+  var result = commandBuilder.buildArguments(options);
+  t.same(result, []);
+});
 
-    this.sinon.stub(gutil, 'log');
+test('uses the automatic maxcpucount when set to zero', t => {
+  var options = { maxcpucount: 0 };
+  var result = commandBuilder.buildArguments(options);
+  t.same(result, ['/maxcpucount']);
+});
+
+test('adds the maxcpucount', t => {
+  var options = { maxcpucount: 2 };
+  var result = commandBuilder.buildArguments(options);
+  t.same(result, ['/maxcpucount:2']);
+});
+
+test('can disable node reuse', t => {
+  var options = { nodeReuse: false };
+  var result = commandBuilder.buildArguments(options);
+  t.same(result, ['/nodeReuse:False']);
+});
+
+test('adds configuration as property', t => {
+  var options = { configuration: 'Test' };
+  var result = commandBuilder.buildArguments(options);
+  t.same(result, ['/property:Configuration=Test']);
+});
+
+test('does not add configuration as property if it is empty', t => {
+  var options = { configuration: null };
+  var result = commandBuilder.buildArguments(options);
+  t.same(result, []);
+});
+
+test('adds a single custom property', t => {
+  var options = { properties: { WarningLevel: 2 } };
+  var result = commandBuilder.buildArguments(options);
+  t.same(result, ['/property:WarningLevel=2']);
+});
+
+test('adds multiple custom properties', t => {
+  var options = { properties: { Test: 'x', WarningLevel: 2 } };
+  var result = commandBuilder.buildArguments(options);
+  t.same(result, ['/property:Test=x', '/property:WarningLevel=2']);
+});
+
+test('throws error when no options are given', t => {
+  t.throws(commandBuilder.construct, 'No options specified!');
+});
+
+test('throws error when empty options are given', t => {
+  t.throws(_ => { commandBuilder.construct(null, {}) }, 'No options specified!');
+});
+
+test('uses provided msbuild path', t => {
+  var result = commandBuilder.construct(
+    { path: 'test.sln' },
+    { targets: ['Rebuild'], msbuildPath: 'xbuild' }
+  );
+  t.same(result, {
+    executable: 'xbuild',
+    args: ['test.sln', '/target:Rebuild']
   });
+});
 
-  describe('buildArguments', function () {
-    it('should build arguments with default options', function () {
-      var result = commandBuilder.buildArguments(defaults);
+test('tries to find msbuild when not provided', t => {
+  var result = commandBuilder.construct(
+    { path: 'test.sln' },
+    { targets: ['Rebuild'], platform: 'win', toolsVersion: 1.0, windir: '.' }
+  );
 
-      expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/nologo', '/maxcpucount', '/property:Configuration=Release']);
-    });
-
-    it('should build arguments without nologo', function () {
-      var options = defaults;
-      options.nologo = undefined;
-      var result = commandBuilder.buildArguments(options);
-
-      expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/maxcpucount', '/property:Configuration=Release']);
-    });
-
-    it('should build arguments with maxcpucount by default', function () {
-      var options = defaults;
-      var result = commandBuilder.buildArguments(options);
-
-      expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/nologo', '/maxcpucount', '/property:Configuration=Release']);
-    });
-
-    it('should build arguments with maxcpucount equal zero', function () {
-      var options = defaults;
-      options.maxcpucount = 0;
-      var result = commandBuilder.buildArguments(options);
-
-      expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/nologo', '/maxcpucount', '/property:Configuration=Release']);
-    });
-
-    it('should build arguments with positive maxcpucount', function () {
-      var options = defaults;
-      options.maxcpucount = 4;
-      var result = commandBuilder.buildArguments(options);
-
-      expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/nologo', '/maxcpucount:4', '/property:Configuration=Release']);
-    });
-
-    it('should build arguments with negative maxcpucount', function () {
-      var options = defaults;
-      options.maxcpucount = -1;
-      var result = commandBuilder.buildArguments(options);
-
-      expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/nologo', '/property:Configuration=Release']);
-    });
-
-    it('should build arguments excluding maxcpucount when using xbuild', function () {
-      var options = defaults;
-      options.maxcpucount = 4;
-      options.msbuildPath = 'xbuild';
-      var result = commandBuilder.buildArguments(options);
-
-      expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/nologo', '/property:Configuration=Release']);
-    });
-
-    it('should build arguments with custom properties', function () {
-      var options = defaults;
-      options.properties = { WarningLevel: 2 };
-      var result = commandBuilder.buildArguments(options);
-
-      expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/nologo', '/maxcpucount', '/property:Configuration=Release', '/property:WarningLevel=2']);
-    });
-
-    it('should add Configuration Property when Configuration-Option is specified', function () {
-      var options = defaults;
-      options.configuration = 'Debug';
-      var result = commandBuilder.buildArguments(options);
-
-      expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/nologo', '/maxcpucount', '/property:Configuration=Debug']);
-    });
-
-    it('should use Configuration Property in the custom properties list when specified', function () {
-      var options = defaults;
-      options.properties = { Configuration: 'Debug' };
-      var result = commandBuilder.buildArguments(options);
-
-      expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/nologo', '/maxcpucount', '/property:Configuration=Debug']);
-    });
-
-    it('should use fileLoggerParameters when specified', function () {
-      var options = defaults;
-      options.fileLoggerParameters = 'LogFile=Build.log';
-      var result = commandBuilder.buildArguments(options);
-
-      expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/nologo', '/flp:LogFile=Build.log', '/maxcpucount', '/property:Configuration=Release']);
-    });
-
-    it('should use consoleLoggerParameters when specified', function () {
-      var options = defaults;
-      options.consoleLoggerParameters = 'Verbosity=minimal';
-      var result = commandBuilder.buildArguments(options);
-
-      expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/nologo', '/clp:Verbosity=minimal', '/maxcpucount', '/property:Configuration=Release']);
-    });
-
-    it('should use loggerParameters when specified', function () {
-      var options = defaults;
-      options.loggerParameters = 'XMLLogger,./MyLogger.dll;OutputAsHTML';
-      var result = commandBuilder.buildArguments(options);
-
-      expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/nologo', '/logger:XMLLogger,./MyLogger.dll;OutputAsHTML', '/maxcpucount', '/property:Configuration=Release']);
-    });
-
-    it('should build arguments /nodeReuse:False when specified', function () {
-      var options = defaults;
-      options.nodeReuse = false;
-      var result = commandBuilder.buildArguments(options);
-
-      expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/nologo', '/maxcpucount', '/nodeReuse:False', '/property:Configuration=Release']);
-    });
+  t.same(result, {
+    executable: 'Microsoft.Net/Framework/v1.0.3705/MSBuild.exe',
+    args: ['test.sln', '/target:Rebuild', '/toolsversion:1.0']
   });
-
-
-
-  describe('construct', function () {
-    it('should fail with no options', function () {
-      var func = function () {
-        return commandBuilder.construct({}, {});
-      };
-
-      expect(func).to.be.throw('No options specified!');
-    });
-
-    it('should find msbuild when not specified', function () {
-      this.sinon.stub(msbuildFinder, 'find').returns('');
-
-      commandBuilder.construct({}, defaults);
-
-      expect(msbuildFinder.find).to.have.been.calledWith(defaults);
-    });
-
-    it('should use msbuildpath if specified', function () {
-      this.sinon.stub(msbuildFinder, 'find')  ;
-
-      var options = defaults;
-      options.msbuildPath = 'here';
-      var command = commandBuilder.construct({}, options);
-
-      expect(msbuildFinder.find).to.not.have.been.calledWith(options);
-      expect(command.executable).to.equal('here');
-    });
-
-    it('should construct a valid command', function () {
-      var options = defaults;
-      options.msbuildPath = 'here';
-      var command = commandBuilder.construct({ path: 'test.sln' }, options);
-
-      expect(command.executable).to.equal('here');
-      expect(command.args).to.contain('test.sln');
-    });
-  });
-
 });

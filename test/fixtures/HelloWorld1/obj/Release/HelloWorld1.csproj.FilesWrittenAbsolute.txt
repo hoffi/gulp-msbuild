@@ -1,0 +1,5 @@
+/Users/stefan/Coding/gulp-msbuild/test/fixtures/HelloWorld1/obj/Release/.NETFramework,Version=v4.0.AssemblyAttribute.cs
+/Users/stefan/Coding/gulp-msbuild/test/fixtures/HelloWorld1/bin/Release/HelloWorld1.exe.mdb
+/Users/stefan/Coding/gulp-msbuild/test/fixtures/HelloWorld1/bin/Release/HelloWorld1.exe
+/Users/stefan/Coding/gulp-msbuild/test/fixtures/HelloWorld1/obj/Release/HelloWorld1.exe
+/Users/stefan/Coding/gulp-msbuild/test/fixtures/HelloWorld1/obj/Release/HelloWorld1.exe.mdb

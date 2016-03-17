@@ -1,124 +1,51 @@
-/*global describe, it*/
-'use strict';
+import test from 'ava';
+import msbuildFinder from '../lib/msbuild-finder';
 
-var chai          = require('chai'),
-    constants     = require('../lib/constants'),
-    expect        = chai.expect,
-    _             = require('lodash'),
-    path          = require('path');
+test('returns xbuild on non windows platforms', t => {
+  var result = msbuildFinder.find({ platform: 'linux' });
+  t.is(result, 'xbuild');
+});
 
-chai.use(require('sinon-chai'));
-require('mocha-sinon');
+test('throws error when no version is specified', t => {
+  t.throws(_ => {
+    msbuildFinder.find({ toolsVersion: null, platform: 'win' });
+  }, 'No MSBuild Version was supplied!');
+});
 
-var msbuildFinder = require('../lib/msbuild-finder');
+test('throws error when an unknown version was specified', t => {
+  t.throws(_ => {
+    msbuildFinder.find({ toolsVersion: 0.6, platform: 'win' });
+  }, 'No MSBuild Version was supplied!');
+});
 
-describe('msbuild-finder', function () {
-
-  it('should use xbuild on linux', function () {
-    var result = msbuildFinder.find({ platform: 'linux' });
-
-    expect(result).to.be.equal('xbuild');
+test('generates correct path for msbuild versions < 12 on 32bit', t => {
+  var result = msbuildFinder.find({
+    toolsVersion: 3.5, windir: '.', platform: 'win'
   });
 
-  it('should use xbuild on darwin', function () {
-    var result = msbuildFinder.find({ platform: 'darwin' });
+  t.is(result, 'Microsoft.Net/Framework/v3.5/MSBuild.exe')
+});
 
-    expect(result).to.be.equal('xbuild');
+test('generates correct path for msbuild versions > 12 on 64bit', t => {
+  var result = msbuildFinder.find({
+    toolsVersion: 3.5, windir: '.', platform: 'win', architecture: 'x64'
   });
 
-  it('should use xbuild on unknown platform', function () {
-    var result = msbuildFinder.find({ platform: 'xyz' });
+  t.is(result, 'Microsoft.Net/Framework64/v3.5/MSBuild.exe')
+});
 
-    expect(result).to.be.equal('xbuild');
+test('generates correct path for msbuild versions > 12 on 32bit', t => {
+  var result = msbuildFinder.find({
+    toolsVersion: 12.0, platform: 'win'
   });
 
-  it('should use msbuild on windows', function () {
-    var windir = 'WINDIR';
-    var toolsVersion = 3.5;
-    var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion, windir: windir });
+  t.is(result, 'C:/Program Files/MSBuild/12.0/Bin/MSBuild.exe')
+});
 
-    var expectMSBuildVersion = constants.MSBUILD_VERSIONS[toolsVersion];
-    var expectedResult = path.join(windir, 'Microsoft.Net', 'Framework', expectMSBuildVersion, 'MSBuild.exe');
-
-    expect(result).to.be.equal(expectedResult);
+test('generates correct path for msbuild versions > 12 on 64bit', t => {
+  var result = msbuildFinder.find({
+    toolsVersion: 12.0, platform: 'win', architecture: 'x64'
   });
 
-  it('should use 64bit msbuild on 64bit windows', function () {
-    var defaults = JSON.parse(JSON.stringify(constants.DEFAULTS));
-
-    var windir = 'WINDIR';
-    var toolsVersion = 3.5;
-    var result = msbuildFinder.find(_.extend(defaults, { platform: 'win32', toolsVersion: toolsVersion, windir: windir }));
-
-    var expectMSBuildVersion = constants.MSBUILD_VERSIONS[toolsVersion];
-    var expectedResult = path.join(windir, 'Microsoft.Net', 'Framework64', expectMSBuildVersion, 'MSBuild.exe');
-
-    expect(result).to.be.equal(expectedResult);
-  });
-
-  it('should use 64bit msbuild on windows with provided x64 architecture', function () {
-    var windir = 'WINDIR';
-    var toolsVersion = 3.5;
-    var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion, windir: windir, architecture: 'x64' });
-
-    var expectMSBuildVersion = constants.MSBUILD_VERSIONS[toolsVersion];
-    var expectedResult = path.join(windir, 'Microsoft.Net', 'Framework64', expectMSBuildVersion, 'MSBuild.exe');
-
-    expect(result).to.be.equal(expectedResult);
-  });
-
-  it('should use msbuild 12 on windows with visual studio 2013 project', function () {
-    var toolsVersion = 12.0;
-    var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion });
-
-    var expectMSBuildVersion = constants.MSBUILD_VERSIONS[toolsVersion];
-
-    var pathRoot = process.env['ProgramFiles'] || path.join('C:', 'Program Files');
-    var expectedResult = path.join(pathRoot, 'MSBuild', expectMSBuildVersion, 'Bin', 'MSBuild.exe');
-
-    expect(result).to.be.equal(expectedResult);
-  });
-
-  it('should use 64bit msbuild 12 on windows x64 with visual studio 2013 project', function () {
-    var toolsVersion = 12.0;
-    var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion, architecture: 'x64' });
-
-    var expectMSBuildVersion = constants.MSBUILD_VERSIONS[toolsVersion];
-    var pathRoot = process.env['ProgramFiles(x86)'] || path.join('C:', 'Program Files (x86)');
-    var expectedResult = path.join(pathRoot, 'MSBuild', expectMSBuildVersion, 'Bin/amd64', 'MSBuild.exe');
-
-    expect(result).to.be.equal(expectedResult);
-  });
-
-  it('should use msbuild 14 on windows with visual studio 2015 project', function () {
-    var toolsVersion = 14.0;
-    var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion });
-
-    var expectMSBuildVersion = constants.MSBUILD_VERSIONS[toolsVersion];
-
-    var pathRoot = process.env['ProgramFiles'] || path.join('C:', 'Program Files');
-    var expectedResult = path.join(pathRoot, 'MSBuild', expectMSBuildVersion, 'Bin', 'MSBuild.exe');
-
-    expect(result).to.be.equal(expectedResult);
-  });
-
-  it('should use 64bit msbuild 14 on windows x64 with visual studio 2015 project', function () {
-    var toolsVersion = 14.0;
-    var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion, architecture: 'x64' });
-
-    var expectMSBuildVersion = constants.MSBUILD_VERSIONS[toolsVersion];
-    var pathRoot = process.env['ProgramFiles(x86)'] || path.join('C:', 'Program Files (x86)');
-    var expectedResult = path.join(pathRoot, 'MSBuild/', expectMSBuildVersion, 'Bin/amd64', 'MSBuild.exe');
-
-    expect(result).to.be.equal(expectedResult);
-  });
-
-  it('should throw error with invalid toolsVersion', function () {
-    var func = function () {
-      return msbuildFinder.find({ platform: 'win32', toolsVersion: -1 });
-    };
-
-    expect(func).to.throw('No MSBuild Version was supplied!');
-  });
-
+  t.is(result, 'C:/Program Files (x86)/MSBuild/12.0/Bin/amd64/MSBuild.exe')
 });
