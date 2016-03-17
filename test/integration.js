@@ -24,7 +24,7 @@ test.cb('does build a c# solution file', t => {
       contents: fs.readFileSync(filePath)
   });
 
-  var stream = msbuild();
+  var stream = msbuild({ stdout: true });
   stream.once('end', function () {
     t.true(fs.existsSync(expectedFile));
     t.end()
@@ -35,7 +35,7 @@ test.cb('does build a c# solution file', t => {
 });
 
 test.cb('does not build a non existing solution file', t => {
-  var stream = msbuild();
+  var stream = msbuild({ stdout: true });
   stream.on('data', function() {});
   stream.on('end', function() { t.end(); });
   stream.write(new gutil.File({ path: null, contents: null }));
