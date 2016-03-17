@@ -24,7 +24,7 @@ test.cb('does build a c# solution file', t => {
       contents: fs.readFileSync(filePath)
   });
 
-  var stream = msbuild({ stdout: true });
+  var stream = msbuild({ stdout: true, toolsVersion: 4.0 });
   stream.once('end', function () {
     t.true(fs.existsSync(expectedFile));
     t.end()

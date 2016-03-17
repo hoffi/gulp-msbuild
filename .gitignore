@@ -3,3 +3,5 @@ node_modules/
 temp/
 coverage
 .nyc_output
+test/fixtures/HelloWorld1/bin
+test/fixtures/HelloWorld1/obj
