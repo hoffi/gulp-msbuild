@@ -1,4 +1,4 @@
-/*global describe, it, afterEach*/
+/*global describe, it, afterEach, before*/
 'use strict';
 
 var chai          = require('chai'),
@@ -125,6 +125,10 @@ describe('msbuild-finder', function () {
     var fs = require('fs');
     var mock;
 
+    before(function() {
+      process.env['ProgramFiles'] = path.join('C:', 'Program Files');
+    });
+
     it('should fall back to 4.0 when Visual Studio 2013 and 2015 are not installed', function() {
       var windir = 'WINDIR';
       var toolsVersion = 'auto';
@@ -149,6 +153,7 @@ describe('msbuild-finder', function () {
       var expectedResult = path.join(windir, 'Microsoft.Net', 'Framework', expectMSBuildVersion, 'MSBuild.exe');
 
       mock = this.sinon.mock(fs);
+      mock.expects('statSync').returns({});
       mock.expects('readdirSync').withArgs(msbuildDir).returns(['padding', 'dir']);
 
       var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion, windir: windir });
