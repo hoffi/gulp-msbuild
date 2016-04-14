@@ -172,6 +172,16 @@ describe('msbuild-command-builder', function () {
       expect(command.executable).to.equal('here');
       expect(command.args).to.contain('test.sln');
     });
+
+    it('should parse templates in properties', function () {
+      var options = defaults;
+      options.properties = { someProp: '<%= file.path %>', anotherProp: 'noTemplate' };
+      options.msbuildPath = 'here';
+      var command = commandBuilder.construct({ path: 'test.sln' }, options);
+
+      expect(command.args).to.contain('/property:someProp=test.sln');
+      expect(command.args).to.contain('/property:anotherProp=noTemplate');
+    });
   });
 
 });
