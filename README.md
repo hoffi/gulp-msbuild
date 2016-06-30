@@ -183,6 +183,18 @@ msbuild({ fileLoggerParameters: 'LogFile=Build.log;Append;Verbosity=diagnostic' 
 msbuild({ loggerParameters: 'XMLLogger,./MyLogger.dll;OutputAsHTML' })
 ```
 
+#### customArgs
+
+> Specify custom msbuild arguments, which don't have a own property in
+> gulp-msbuild.
+
+**Default:** None
+
+**Example:**
+```javascript
+msbuild({ customArgs: ['/noautoresponse'] })
+```
+
 ### MSBuild Command-Line Reference
 
 For a more detailed description of each MSBuild Option see the [MSBuild Command-Line Reference](http://msdn.microsoft.com/en-us/library/ms164311.aspx)
