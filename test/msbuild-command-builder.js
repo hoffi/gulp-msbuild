@@ -172,6 +172,14 @@ describe('msbuild-command-builder', function () {
       expect(command.executable).to.equal('here');
       expect(command.args).to.contain('test.sln');
     });
+
+    it('should include arguments passed by customArgs', function () {
+      var options = defaults;
+      options.customArgs = ['/custom1', '/custom2'];
+      var result = commandBuilder.buildArguments(options);
+
+      expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/nologo', '/maxcpucount', '/property:Configuration=Release', '/custom1', '/custom2']);
+    });
   });
 
 });
