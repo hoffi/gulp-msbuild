@@ -1,4 +1,4 @@
-/*global describe, it*/
+/*global describe, it, afterEach, before*/
 'use strict';
 
 var chai          = require('chai'),
@@ -69,7 +69,7 @@ describe('msbuild-finder', function () {
 
   it('should use msbuild 12 on windows with visual studio 2013 project', function () {
     var toolsVersion = 12.0;
-    var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion });
+    var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion, architecture: 'x86' });
 
     var expectMSBuildVersion = constants.MSBUILD_VERSIONS[toolsVersion];
 
@@ -92,7 +92,7 @@ describe('msbuild-finder', function () {
 
   it('should use msbuild 14 on windows with visual studio 2015 project', function () {
     var toolsVersion = 14.0;
-    var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion });
+    var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion, architecture: 'x86' });
 
     var expectMSBuildVersion = constants.MSBUILD_VERSIONS[toolsVersion];
 
@@ -119,6 +119,86 @@ describe('msbuild-finder', function () {
     };
 
     expect(func).to.throw('No MSBuild Version was supplied!');
+  });
+
+  describe('when toolsVersion is \'auto\'', function() {
+    var fs = require('fs');
+    var mock;
+
+    before(function() {
+      process.env['ProgramFiles'] = path.join('C:', 'Program Files');
+    });
+
+    it('should fall back to 4.0 when Visual Studio 2013 and 2015 are not installed', function() {
+      var windir = 'WINDIR';
+      var toolsVersion = 'auto';
+
+      var expectMSBuildVersion = constants.MSBUILD_VERSIONS[4.0];
+      var expectedResult = path.join(windir, 'Microsoft.Net', 'Framework', expectMSBuildVersion, 'MSBuild.exe');
+
+      mock = this.sinon.mock(fs);
+      mock.expects('statSync').throws();
+
+      var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion, windir: windir });
+
+      expect(result).to.be.equal(expectedResult);
+    });
+
+    it('should fall back to 4.0 when MSBuild dir exists in Program Files, but no versions installed', function () {
+      var windir = 'WINDIR';
+      var toolsVersion = 'auto';
+      var expectMSBuildVersion = constants.MSBUILD_VERSIONS[4.0];
+      var pathRoot = process.env['ProgramFiles'] || path.join('C:', 'Program Files');
+      var msbuildDir = path.join(pathRoot, 'MSBuild');
+      var expectedResult = path.join(windir, 'Microsoft.Net', 'Framework', expectMSBuildVersion, 'MSBuild.exe');
+
+      mock = this.sinon.mock(fs);
+      mock.expects('statSync').returns({});
+      mock.expects('readdirSync').withArgs(msbuildDir).returns(['padding', 'dir']);
+
+      var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion, windir: windir });
+
+      expect(result).to.be.equal(expectedResult);
+    });
+
+    it('should use msbuild 14 on windows with visual studio 2015 project', function () {
+      var toolsVersion = 'auto';
+      var expectMSBuildVersion = constants.MSBUILD_VERSIONS[14.0];
+      var pathRoot = process.env['ProgramFiles'] || path.join('C:', 'Program Files');
+      var msbuildDir = path.join(pathRoot, 'MSBuild');
+      var expectedResult = path.join(pathRoot, 'MSBuild', expectMSBuildVersion, 'Bin', 'MSBuild.exe');
+
+      mock = this.sinon.mock(fs);
+      mock.expects('readdirSync').withArgs(msbuildDir).returns(['padding', 'dir', '14.0']);
+      mock.expects('statSync').withArgs(msbuildDir).returns({});
+      mock.expects('statSync').withArgs(path.join(msbuildDir, '14.0', 'Bin')).returns({});
+
+      var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion, architecture: 'x86' });
+
+      expect(result).to.be.equal(expectedResult);
+    });
+
+    it('should use msbuild 12 on windows with visual studio 2013 project and an incomplete visual studio 2015 install', function () {
+      var toolsVersion = 'auto';
+      var expectMSBuildVersion = constants.MSBUILD_VERSIONS[12.0];
+      var pathRoot = process.env['ProgramFiles'] || path.join('C:', 'Program Files');
+      var msbuildDir = path.join(pathRoot, 'MSBuild');
+      var expectedResult = path.join(pathRoot, 'MSBuild', expectMSBuildVersion, 'Bin', 'MSBuild.exe');
+
+      mock = this.sinon.mock(fs);
+      mock.expects('readdirSync').withArgs(msbuildDir).returns(['padding', 'dir', '12.0', '14.0']);
+      mock.expects('statSync').withArgs(msbuildDir).returns({});
+      mock.expects('statSync').withArgs(path.join(msbuildDir, '12.0', 'Bin')).returns({});
+      mock.expects('statSync').withArgs(path.join(msbuildDir, '14.0', 'Bin')).throws();
+
+      var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion, architecture: 'x86' });
+
+      expect(result).to.be.equal(expectedResult);
+    });
+
+    afterEach(function() {
+      mock.restore();
+    });
   });
 
 });
