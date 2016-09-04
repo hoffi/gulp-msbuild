@@ -6,7 +6,7 @@ var through = require('through2'),
     msbuildRunner = require('./lib/msbuild-runner');
 
 function mergeOptionsWithDefaults(options) {
-  return _.extend(constants.DEFAULTS, options);
+  return _.extend({}, constants.DEFAULTS, options);
 }
 
 module.exports = function(options) {
@@ -22,7 +22,6 @@ module.exports = function(options) {
     return msbuildRunner.startMsBuildTask(mergedOptions, file, function(err) {
       if (err) return callback(err);
       self.push(file);
-      self.emit("end");
       return callback();
     });
   });
