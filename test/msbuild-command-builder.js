@@ -44,6 +44,30 @@ describe('msbuild-command-builder', function () {
       expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/nologo', '/maxcpucount', '/property:Configuration=Release']);
     });
 
+    it('should fallback to 4.0 when toolsVersion is auto', function () {
+      var options = defaults;
+      options.toolsVersion = 'auto';
+      var result = commandBuilder.buildArguments(options);
+
+      expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/nologo', '/maxcpucount', '/property:Configuration=Release']);
+    });
+
+    it('does omit toolsVersion parameter when it is undefined', function () {
+      var options = defaults;
+      options.toolsVersion = undefined;
+      var result = commandBuilder.buildArguments(options);
+
+      expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/nologo', '/maxcpucount', '/property:Configuration=Release']);
+    });
+
+    it('does omit toolsVersion parameter when it is null', function () {
+      var options = defaults;
+      options.toolsVersion = null;
+      var result = commandBuilder.buildArguments(options);
+
+      expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/nologo', '/maxcpucount', '/property:Configuration=Release']);
+    });
+
     it('should build arguments with maxcpucount equal zero', function () {
       var options = defaults;
       options.maxcpucount = 0;

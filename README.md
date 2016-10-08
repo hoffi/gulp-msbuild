@@ -103,6 +103,8 @@ properties: { Configuration: 'Debug' }
 
 ```'auto'``` attempts to find the latest version >= 12.0, with a fallback to 4.0
 
+This parameter can be omitted by explicitely set them to `null` or `undefined`.
+
 #### architecture
 
 > Specify the Architecture
