@@ -186,10 +186,11 @@ describe('msbuild-finder', function () {
       var expectedResult = path.join(pathRoot, 'MSBuild', expectMSBuildVersion, 'Bin', 'MSBuild.exe');
 
       mock = this.sinon.mock(fs);
-      mock.expects('readdirSync').withArgs(msbuildDir).returns(['padding', 'dir', '12.0', '14.0']);
+      mock.expects('readdirSync').withArgs(msbuildDir).returns(['padding', 'dir', '12.0', '14.0', '15.0']);
       mock.expects('statSync').withArgs(msbuildDir).returns({});
       mock.expects('statSync').withArgs(path.join(msbuildDir, '12.0', 'Bin')).returns({});
       mock.expects('statSync').withArgs(path.join(msbuildDir, '14.0', 'Bin')).throws();
+      mock.expects('statSync').withArgs(path.join(msbuildDir, '15.0', 'Bin')).returns({});
 
       var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion, architecture: 'x86' });
 
@@ -200,5 +201,4 @@ describe('msbuild-finder', function () {
       mock.restore();
     });
   });
-
 });
