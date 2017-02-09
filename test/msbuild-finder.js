@@ -121,6 +121,11 @@ describe('msbuild-finder', function () {
 
     var pathRoot = process.env['ProgramFiles'] || path.join('C:', 'Program Files');
     var expectedResult = path.join(pathRoot, 'Microsoft Visual Studio','2017','Professional', 'MSBuild', expectMSBuildVersion, 'Bin', 'MSBuild.exe');
+    try {
+      fs.statSync(pathRoot);
+    } catch (e) {
+      expectedResult = path.join(pathRoot, 'Microsoft Visual Studio','2017','BuildTools', 'MSBuild', expectMSBuildVersion, 'Bin', 'MSBuild.exe');
+    }
 
     expect(result).to.be.equal(expectedResult);
   });
@@ -132,6 +137,11 @@ describe('msbuild-finder', function () {
     var expectMSBuildVersion = constants.MSBUILD_VERSIONS[toolsVersion];
     var pathRoot = process.env['ProgramFiles(x86)'] || path.join('C:', 'Program Files (x86)');
     var expectedResult = path.join(pathRoot, 'Microsoft Visual Studio','2017','Professional', 'MSBuild', expectMSBuildVersion, 'Bin/amd64', 'MSBuild.exe');
+    try {
+      fs.statSync(pathRoot);
+    } catch (e) {
+      expectedResult = path.join(pathRoot, 'Microsoft Visual Studio','2017','BuildTools', 'MSBuild', expectMSBuildVersion, 'Bin/amd64', 'MSBuild.exe');
+    }
 
     expect(result).to.be.equal(expectedResult);
   });
