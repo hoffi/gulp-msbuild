@@ -99,7 +99,7 @@ properties: { Configuration: 'Debug' }
 
 **Default:** 4.0
 
-**Possible Values:** 1.0, 1.1, 2.0, 3.5, 4.0, 12.0, 14.0, ```'auto'```
+**Possible Values:** 1.0, 1.1, 2.0, 3.5, 4.0, 12.0, 14.0, 15.0, ```'auto'```
 
 ```'auto'``` attempts to find the latest version >= 12.0, with a fallback to 4.0
 

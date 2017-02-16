@@ -24,14 +24,14 @@
     "through2": "^2.0.0"
   },
   "devDependencies": {
-    "mocha": "*",
-    "coveralls": "*",
-    "mocha-lcov-reporter": "*",
-    "istanbul": "*",
-    "mocha-sinon": "^1.1.2",
-    "sinon-chai": "^2.5.0",
     "chai": "^3.4.0",
-    "sinon": ">=1.4.0 <2"
+    "coveralls": "*",
+    "istanbul": "*",
+    "mocha": "*",
+    "mocha-lcov-reporter": "*",
+    "mocha-sinon": "^1.1.6",
+    "sinon": ">=1.4.0 <2",
+    "sinon-chai": "^2.8.0"
   },
   "engines": {
     "node": ">=0.8.0",
