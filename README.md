@@ -93,6 +93,15 @@ gulp.task("default", function() {
 properties: { Configuration: 'Debug' }
 ```
 
+#### solution platform
+
+> Specify the Solution Platform (e.g. x86, x64, AnyCPU)
+
+**Hint:** You can also specify the Solution Platform using the *properties* option
+```js
+properties: { Platform: 'AnyCPU' }
+```
+
 #### toolsVersion
 
 > Specify the .NET Tools-Version
