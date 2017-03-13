@@ -93,7 +93,7 @@ gulp.task("default", function() {
 properties: { Configuration: 'Debug' }
 ```
 
-#### solution platform
+#### solutionPlatform
 
 > Specify the Solution Platform (e.g. x86, x64, AnyCPU)
 
