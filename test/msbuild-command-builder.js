@@ -125,6 +125,23 @@ describe('msbuild-command-builder', function () {
       expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/nologo', '/maxcpucount', '/property:Configuration=Debug']);
     });
 
+    it('should add SolutionPlatform Property when SolutionPlatform-Option is specified', function () {
+      var options = defaults;
+      options.solutionPlatform = 'AnyCPU';
+      var result = commandBuilder.buildArguments(options);
+
+      expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/nologo', '/maxcpucount', '/property:Platform=AnyCPU', '/property:Configuration=Release']);
+    });
+
+    it('should use SolutionPlatform Property in the custom properties list when specified', function () {
+      var options = defaults;
+      options.solutionPlatform = 'AnyCPU';
+      options.properties = { Platform: 'x86' };
+      var result = commandBuilder.buildArguments(options);
+
+      expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/nologo', '/maxcpucount', '/property:Platform=x86', '/property:Configuration=Release']);
+    });
+
     it('should use fileLoggerParameters when specified', function () {
       var options = defaults;
       options.fileLoggerParameters = 'LogFile=Build.log';
@@ -178,7 +195,7 @@ describe('msbuild-command-builder', function () {
     });
 
     it('should use msbuildpath if specified', function () {
-      this.sinon.stub(msbuildFinder, 'find')  ;
+      this.sinon.stub(msbuildFinder, 'find');
 
       var options = defaults;
       options.msbuildPath = 'here';
