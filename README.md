@@ -201,6 +201,15 @@ msbuild({ loggerParameters: 'XMLLogger,./MyLogger.dll;OutputAsHTML' })
 msbuild({ customArgs: ['/noautoresponse'] })
 ```
 
+#### emitEndEvent
+
+> Specify if a gulp end-event should be emitted.
+
+**Default:** false = No end event is emitted.
+
+**Possible Values:** true, false
+
+
 ### MSBuild Command-Line Reference
 
 For a more detailed description of each MSBuild Option see the [MSBuild Command-Line Reference](http://msdn.microsoft.com/en-us/library/ms164311.aspx)
