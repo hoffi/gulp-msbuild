@@ -348,9 +348,20 @@ describe('msbuild-finder', function () {
       var expectMSBuildVersion = constants.MSBUILD_VERSIONS[4.0];
       var pathRoot = process.env['ProgramFiles'] || path.join('C:', 'Program Files');
       var msbuildDir = path.join(pathRoot, 'MSBuild');
+      var vsEnterprisePath = path.join(pathRoot, 'Microsoft Visual Studio','2017','Enterprise');
+      var vsProfessionalPath = path.join(pathRoot, 'Microsoft Visual Studio','2017','Professional');
+      var vsCommunityPath = path.join(pathRoot, 'Microsoft Visual Studio','2017','Community');
+      var vsBuildToolsPath = path.join(pathRoot, 'Microsoft Visual Studio','2017','BuildTools');
+      var expectedResult = path.join(pathRoot, 'MSBuild', '15.0', 'Bin/amd64', 'MSBuild.exe');
       var expectedResult = path.join(windir, 'Microsoft.Net', 'Framework', expectMSBuildVersion, 'MSBuild.exe');
 
       mock = this.sinon.mock(fs);
+
+    var mock = this.sinon.mock(fs);
+      mock.expects('statSync').withArgs(vsEnterprisePath).throws();
+      mock.expects('statSync').withArgs(vsProfessionalPath).throws();
+      mock.expects('statSync').withArgs(vsCommunityPath).throws();
+      mock.expects('statSync').withArgs(vsBuildToolsPath).throws();
       mock.expects('statSync').returns({});
       mock.expects('readdirSync').withArgs(msbuildDir).returns(['padding', 'dir']);
 
