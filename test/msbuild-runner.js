@@ -54,7 +54,7 @@ describe('msbuild-runner', function () {
 
     simulateEvent('close', 0);
 
-    msbuildRunner.startMsBuildTask(defaults, {}, function () {
+    msbuildRunner.startMsBuildTask(defaults, {}, null, function () {
       expect(gutil.log).to.have.been.calledWith(gutil.colors.cyan('MSBuild complete!'));
       done();
     });
@@ -67,7 +67,7 @@ describe('msbuild-runner', function () {
 
     simulateEvent('close', 0);
 
-    msbuildRunner.startMsBuildTask(defaults, {}, function () {
+    msbuildRunner.startMsBuildTask(defaults, {}, null, function () {
       expect(gutil.log).to.have.been.calledWith(gutil.colors.cyan('Using MSBuild command:'), 'msbuild', '/nologo');
       done();
     });
@@ -76,7 +76,7 @@ describe('msbuild-runner', function () {
   it('should log an error message when the msbuild command exits with a non-zero code', function (done) {
     simulateEvent('close', 1);
 
-    msbuildRunner.startMsBuildTask(defaults, {}, function () {
+    msbuildRunner.startMsBuildTask(defaults, {}, null, function () {
       expect(gutil.log).to.have.been.calledWith(gutil.colors.red('MSBuild failed with code 1!'));
       done();
     });
@@ -85,7 +85,7 @@ describe('msbuild-runner', function () {
   it('should log an error message when the msbuild command is killed by a signal', function (done) {
     simulateEvent('close', null, 'SIGUSR1');
 
-    msbuildRunner.startMsBuildTask(defaults, {}, function () {
+    msbuildRunner.startMsBuildTask(defaults, {}, null, function () {
       expect(gutil.log).to.have.been.calledWith(gutil.colors.red('MSBuild killed with signal SIGUSR1!'));
       done();
     });
@@ -96,7 +96,7 @@ describe('msbuild-runner', function () {
 
     simulateEvent('close', 1);
 
-    msbuildRunner.startMsBuildTask(defaults, {}, function (err) {
+    msbuildRunner.startMsBuildTask(defaults, {}, null, function (err) {
       expect(err).to.be.an.instanceof(Error);
       expect(err.message).to.be.equal('MSBuild failed with code 1!');
       expect(gutil.log).to.have.been.calledWith(gutil.colors.red('MSBuild failed with code 1!'));
@@ -109,7 +109,7 @@ describe('msbuild-runner', function () {
 
     simulateEvent('error', error);
 
-    msbuildRunner.startMsBuildTask(defaults, {}, function () {
+    msbuildRunner.startMsBuildTask(defaults, {}, null, function () {
       expect(gutil.log).to.have.been.calledWith(error);
       expect(gutil.log).to.have.been.calledWith(gutil.colors.red('MSBuild failed!'));
       done();
@@ -122,7 +122,7 @@ describe('msbuild-runner', function () {
 
     simulateEvent('error', error);
 
-    msbuildRunner.startMsBuildTask(defaults, {}, function (err) {
+    msbuildRunner.startMsBuildTask(defaults, {}, null, function (err) {
       expect(err).to.be.equal(error);
       expect(gutil.log).to.have.been.calledWith(error);
       expect(gutil.log).to.have.been.calledWith(gutil.colors.red('MSBuild failed!'));

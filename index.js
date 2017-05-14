@@ -40,7 +40,7 @@ module.exports = function(options) {
       return callback();
     }
 
-    return msbuildRunner.startMsBuildTask(mergedOptions, file, function(err) {
+    return msbuildRunner.startMsBuildTask(mergedOptions, file, self, function(err) {
       if (err) return callback(err);
       self.push(file);
       if (mergedOptions.emitEndEvent) self.emit("end");
