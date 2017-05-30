@@ -2,11 +2,13 @@
 'use strict';
 
 var chai          = require('chai'),
-    Stream        = require('stream'),
     childProcess  = require('child_process'),
     constants     = require('../lib/constants'),
     gutil         = require('gulp-util'),
-    expect        = chai.expect;
+    expect        = chai.expect,
+    path          = require('path'),
+    fs            = require('fs'),
+    proxyquire    = require('proxyquire');
 
 chai.use(require('sinon-chai'));
 require('mocha-sinon');
@@ -47,6 +49,7 @@ describe('msbuild-runner', function () {
     this.sinon.stub(childProcess, 'spawn', spawn);
     this.sinon.stub(commandBuilder, 'construct').returns({ executable: 'msbuild', args: ['/nologo'] });
     this.sinon.stub(gutil, 'log');
+    this.sinon.stub(path, 'join');
   });
 
   it('should execute the msbuild command', function (done) {
@@ -126,6 +129,100 @@ describe('msbuild-runner', function () {
       expect(err).to.be.equal(error);
       expect(gutil.log).to.have.been.calledWith(error);
       expect(gutil.log).to.have.been.calledWith(gutil.colors.red('MSBuild failed!'));
+      done();
+    });
+  });
+
+  it('should return an Error if we cannot glob the publish location', function(done) {
+    defaults.emitPublishedFiles = true;
+    defaults.properties.PublishUrl = 'foobar';
+
+    var error = new Error('Error globbing published files at foobar');
+    var mockGlob = this.sinon.stub().callsArgWith(2, error, []);
+
+    simulateEvent('close', 0);
+
+    var msbuildRunner = proxyquire('../lib/msbuild-runner', { 'glob': mockGlob });
+
+    msbuildRunner.startMsBuildTask(defaults, {}, null, function(err) {
+      expect(err).to.be.equal(error);
+      expect(gutil.log).to.have.been.calledWith(gutil.colors.cyan('MSBuild complete!'));
+      expect(gutil.log).to.have.been.calledWith(gutil.colors.red('Error globbing published files at foobar'));
+      done();
+    });
+  });
+
+  it('should call join with the publishUrl and the file path for each file', function(done) {
+    defaults.emitPublishedFiles = true;
+    defaults.properties.PublishUrl = 'foobar';
+
+    var fileArray = [
+      'foo.js',
+      'bar.js'
+    ];
+
+    var mockGlob = this.sinon.stub().callsArgWith(2, null, fileArray);
+    var msbuildRunner = proxyquire('../lib/msbuild-runner', { 'glob': mockGlob });
+
+    var stubStatsObj = {
+      isFile: function() { return false; }
+    };
+    this.sinon.stub(fs, 'statSync').returns(stubStatsObj);
+
+    simulateEvent('close', 0);
+
+    msbuildRunner.startMsBuildTask(defaults, {}, null, function(err) {
+      expect(path.join).to.have.been.calledWith('foobar', fileArray[0]);
+      expect(path.join).to.have.been.calledWith('foobar', fileArray[1]);
+      done();
+    });
+  });
+
+  it('should should push gutil files for each file with the correct attributes', function(done) {
+    defaults.emitPublishedFiles = true;
+    defaults.properties.PublishUrl = 'foobar';
+
+    var fileArray = [
+      'foo.js',
+      'bar.js'
+    ];
+
+    var pathArray = [
+      'foobar/foo.js',
+      'foobar/bar.js'
+    ];
+
+    var contentArray = [
+      'foo content',
+      'bar content'
+    ];
+
+    var mockGlob = this.sinon.stub().callsArgWith(2, null, fileArray);
+    var msbuildRunner = proxyquire('../lib/msbuild-runner',{ 'glob': mockGlob });
+
+    var stubStatsObj = {
+      isFile: function() { return true; }
+    };
+    this.sinon.stub(fs, 'statSync').returns(stubStatsObj);
+
+    path.join.withArgs(defaults.properties.PublishUrl, fileArray[0]).returns(pathArray[0]);
+    path.join.withArgs(defaults.properties.PublishUrl, fileArray[1]).returns(pathArray[1]);
+
+    this.sinon.stub(fs, 'readFileSync').withArgs(fileArray[0]).returns(contentArray[0]);
+    fs.readFileSync.withArgs(fileArray[1]).returns(contentArray[1]);
+
+    this.sinon.stub(gutil, 'File').returnsArg(0);
+
+    var mockStream = {
+      push: this.sinon.stub()
+    };
+
+    simulateEvent('close', 0);
+
+    msbuildRunner.startMsBuildTask(defaults, {}, mockStream, function(err) {
+      expect(gutil.File).to.have.been.calledWithNew;
+      expect(mockStream.push).to.have.been.calledTwice;
+      // TODO: Needs more asserts here, but I can't get calledWith to work on mockStream.push
       done();
     });
   });
