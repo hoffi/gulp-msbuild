@@ -61,10 +61,10 @@ describe('msbuild-runner', function () {
 
     msbuildRunner.startMsBuildTask(defaults, {}, null, function () {
       expect(gutil.log).to.have.been.calledWith(gutil.colors.cyan('MSBuild complete!'));
-      done();
     });
 
     expect(childProcess.spawn).to.have.been.calledWith('msbuild', ['/nologo']);
+    done();
   });
 
   it('should log the command when the logCommand option is set', function(done) {
@@ -74,8 +74,8 @@ describe('msbuild-runner', function () {
 
     msbuildRunner.startMsBuildTask(defaults, {}, null, function () {
       expect(gutil.log).to.have.been.calledWith(gutil.colors.cyan('Using MSBuild command:'), 'msbuild', '/nologo');
-      done();
     });
+    done();
   });
 
   it('should log an error message when the msbuild command exits with a non-zero code', function (done) {
@@ -83,8 +83,8 @@ describe('msbuild-runner', function () {
 
     msbuildRunner.startMsBuildTask(defaults, {}, null, function () {
       expect(gutil.log).to.have.been.calledWith(gutil.colors.red('MSBuild failed with code 1!'));
-      done();
     });
+    done();
   });
 
   it('should log an error message when the msbuild command is killed by a signal', function (done) {
@@ -92,8 +92,8 @@ describe('msbuild-runner', function () {
 
     msbuildRunner.startMsBuildTask(defaults, {}, null, function () {
       expect(gutil.log).to.have.been.calledWith(gutil.colors.red('MSBuild killed with signal SIGUSR1!'));
-      done();
     });
+    done();
   });
 
   it('should log an error message and return an Error in the callback when the msbuild command failed', function (done) {
@@ -105,8 +105,8 @@ describe('msbuild-runner', function () {
       expect(err).to.be.an.instanceof(Error);
       expect(err.message).to.be.equal('MSBuild failed with code 1!');
       expect(gutil.log).to.have.been.calledWith(gutil.colors.red('MSBuild failed with code 1!'));
-      done();
     });
+    done();
   });
 
   it('should log an error message when the spawned process experienced an error', function (done) {
@@ -117,8 +117,8 @@ describe('msbuild-runner', function () {
     msbuildRunner.startMsBuildTask(defaults, {}, null, function () {
       expect(gutil.log).to.have.been.calledWith(error);
       expect(gutil.log).to.have.been.calledWith(gutil.colors.red('MSBuild failed!'));
-      done();
     });
+    done();
   });
 
   it('should log an error message and return an Error in the callback when the spawned process experienced an error', function (done) {
@@ -154,33 +154,6 @@ describe('msbuild-runner', function () {
     });
   });
 
-  it('should call join with the publishUrl and the file path for each file', function(done) {
-    defaults.emitPublishedFiles = true;
-    defaults.publishDirectory = 'foobar';
-
-    var fileArray = [
-      'foo.js',
-      'bar.js'
-    ];
-
-    var mockGlob = this.sinon.stub().callsArgWith(2, null, fileArray);
-    var msbuildRunner = proxyquire('../lib/msbuild-runner', { 'glob': mockGlob });
-
-    var stubStatsObj = {
-      isFile: function() { return false; }
-    };
-    this.sinon.stub(fs, 'statSync').returns(stubStatsObj);
-
-    simulateEvent('close', 0);
-
-    msbuildRunner.startMsBuildTask(defaults, {}, null, function(err) {
-      expect(path.join).to.have.been.calledWith('foobar', fileArray[0]);
-      expect(path.join).to.have.been.calledWith('foobar', fileArray[1]);
-      done();
-    });
-  });
-
-
   it('should should push gutil files for each file with the correct attributes', function(done) {
     defaults.emitPublishedFiles = true;
 
@@ -193,8 +166,8 @@ describe('msbuild-runner', function () {
     ];
 
     var pathArray = [
-      'foobar/foo.js',
-      'foobar/bar.js'
+      'foo.js',
+      'bar.js'
     ];
 
     var contentArray = [
