@@ -16,10 +16,10 @@ describe('msbuild-finder', function () {
   var fs = require('fs');
   var mock;
 
-  it('should use xbuild on linux', function () {
+  it('should use msbuild on linux', function () {
     var result = msbuildFinder.find({ platform: 'linux' });
 
-    expect(result).to.be.equal('xbuild');
+    expect(result).to.include('msbuild');
   });
 
   it('should use xbuild on darwin', function () {
