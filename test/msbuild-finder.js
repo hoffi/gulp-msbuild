@@ -16,10 +16,29 @@ describe('msbuild-finder', function () {
   var fs = require('fs');
   var mock;
 
-  it('should use msbuild OR xbuild on linux', function () {
-    var result = msbuildFinder.find({ platform: 'linux' });
+  describe('linux platorm', function() {
+    var child = require ('child_process');
 
-    expect(result).to.be.oneOf(['msbuild','xbuild']);
+    it('should use msbuild if possible', function () {
+
+      var mock = this.sinon.mock(child);
+      mock.expects('spawnSync').withArgs('which', ['msbuild'], {encoding: 'utf8'}).returns({});
+
+      var result = msbuildFinder.find({ platform: 'linux' });
+
+      expect(result).to.be.equal('msbuild');
+    });
+
+    it('should fallback to xbuild when msbuild is not present', function () {
+
+      var mock = this.sinon.mock(child);
+      mock.expects('spawnSync').withArgs('which', ['msbuild'], {encoding: 'utf8'}).returns({
+        stderr: 1
+      });
+
+      var result = msbuildFinder.find({ platform: 'linux' });
+      expect(result).to.be.equal('xbuild');
+    });
   });
 
   it('should use xbuild on darwin', function () {
