@@ -173,6 +173,15 @@ describe('msbuild-command-builder', function () {
 
       expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/nologo', '/maxcpucount', '/nodeReuse:False', '/property:Configuration=Release']);
     });
+
+    it('should add publish properties when emitPublishedFiles is true', function () {
+      var options = defaults;
+      options.emitPublishedFiles = true;
+      options.publishDirectory = 'dummy';
+      var result = commandBuilder.buildArguments(options);
+
+      expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/nologo', '/maxcpucount', '/property:DeployOnBuild=true', '/property:DeployDefaultTarget=WebPublish', '/property:WebPublishMethod=FileSystem', '/property:DeleteExistingFiles=true', '/property:_FindDependencies=true', '/property:PublishUrl=dummy', '/property:Configuration=Release']);
+    });
   });
 
 
@@ -232,5 +241,4 @@ describe('msbuild-command-builder', function () {
       expect(command.args).to.contain('/property:anotherProp=noTemplate');
     });
   });
-
 });
