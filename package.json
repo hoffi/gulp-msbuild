@@ -1,6 +1,6 @@
 {
   "name": "gulp-msbuild",
-  "version": "0.4.8",
+  "version": "0.5.0",
   "description": "msbuild plugin for gulp. Inspired by grunt-msbuild.",
   "keywords": [
     "gulpplugin",
