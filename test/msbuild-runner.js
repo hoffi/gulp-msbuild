@@ -57,7 +57,7 @@ describe('msbuild-runner', function () {
   it('should execute the msbuild command', function (done) {
     defaults.stdout = true;
 
-    simulateEvent('close', 0);
+    simulateEvent('exit', 0);
 
     msbuildRunner.startMsBuildTask(defaults, {}, null, function () {
       expect(gutil.log).to.have.been.calledWith(gutil.colors.cyan('MSBuild complete!'));
@@ -70,7 +70,7 @@ describe('msbuild-runner', function () {
   it('should log the command when the logCommand option is set', function(done) {
     defaults.logCommand = true;
 
-    simulateEvent('close', 0);
+    simulateEvent('exit', 0);
 
     msbuildRunner.startMsBuildTask(defaults, {}, null, function () {
       expect(gutil.log).to.have.been.calledWith(gutil.colors.cyan('Using MSBuild command:'), 'msbuild', '/nologo');
@@ -79,7 +79,7 @@ describe('msbuild-runner', function () {
   });
 
   it('should log an error message when the msbuild command exits with a non-zero code', function (done) {
-    simulateEvent('close', 1);
+    simulateEvent('exit', 1);
 
     msbuildRunner.startMsBuildTask(defaults, {}, null, function () {
       expect(gutil.log).to.have.been.calledWith(gutil.colors.red('MSBuild failed with code 1!'));
@@ -88,7 +88,7 @@ describe('msbuild-runner', function () {
   });
 
   it('should log an error message when the msbuild command is killed by a signal', function (done) {
-    simulateEvent('close', null, 'SIGUSR1');
+    simulateEvent('exit', null, 'SIGUSR1');
 
     msbuildRunner.startMsBuildTask(defaults, {}, null, function () {
       expect(gutil.log).to.have.been.calledWith(gutil.colors.red('MSBuild killed with signal SIGUSR1!'));
@@ -99,7 +99,7 @@ describe('msbuild-runner', function () {
   it('should log an error message and return an Error in the callback when the msbuild command failed', function (done) {
     defaults.errorOnFail = true;
 
-    simulateEvent('close', 1);
+    simulateEvent('exit', 1);
 
     msbuildRunner.startMsBuildTask(defaults, {}, null, function (err) {
       expect(err).to.be.an.instanceof(Error);
@@ -135,6 +135,38 @@ describe('msbuild-runner', function () {
     });
   });
 
+  it('should be able to handle error and exit events', function (done) {
+    defaults.errorOnFail = true;
+    var error = new Error('broken');
+
+    simulateEvent('error', error);
+    simulateEvent('exit', 1);
+
+    msbuildRunner.startMsBuildTask(defaults, {}, null, function (err) {
+      expect(err).to.be.equal(error);
+      expect(gutil.log).to.have.been.calledWith(error);
+      expect(gutil.log).to.have.been.calledWith(gutil.colors.red('MSBuild failed!'));
+      expect(gutil.log).to.have.been.calledTwice;
+      done();
+    });
+  });
+
+  it('should be able to handle exit and error events', function (done) {
+    defaults.errorOnFail = true;
+    var error = new Error('broken');
+    var failedError = new Error('MSBuild failed with code 1!');
+
+    simulateEvent('exit', 1);
+    simulateEvent('error', error);
+
+    msbuildRunner.startMsBuildTask(defaults, {}, null, function (err) {
+      expect(err.message).to.be.equal('MSBuild failed with code 1!');
+      expect(gutil.log).to.have.been.calledWith(gutil.colors.red('MSBuild failed with code 1!'));
+      expect(gutil.log).to.have.been.calledOnce;
+      done();
+    });
+  });
+
   it('should return an Error if we cannot glob the publish location', function(done) {
     defaults.emitPublishedFiles = true;
     defaults.publishDirectory = 'foobar';
@@ -142,7 +174,7 @@ describe('msbuild-runner', function () {
     var error = new Error('Error globbing published files at foobar');
     var mockGlob = this.sinon.stub().callsArgWith(2, error, []);
 
-    simulateEvent('close', 0);
+    simulateEvent('exit', 0);
 
     var msbuildRunner = proxyquire('../lib/msbuild-runner', { 'glob': mockGlob });
 
@@ -197,7 +229,7 @@ describe('msbuild-runner', function () {
       push: this.sinon.stub()
     };
 
-    simulateEvent('close', 0);
+    simulateEvent('exit', 0);
 
     msbuildRunner.startMsBuildTask(defaults, {}, mockStream, function(err) {
       expect(gutil.File).to.have.been.calledWithNew;
