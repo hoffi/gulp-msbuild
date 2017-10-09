@@ -40,11 +40,30 @@ describe('msbuild-finder', function () {
       expect(result).to.be.equal('xbuild');
     });
   });
-  
-  it('should use xbuild on darwin', function () {
-    var result = msbuildFinder.find({ platform: 'darwin' });
 
-    expect(result).to.be.equal('xbuild');
+  describe('darwin platorm', function() {
+    var child = require ('child_process');
+
+    it('should use msbuild if possible', function () {
+
+      var mock = this.sinon.mock(child);
+      mock.expects('spawnSync').withArgs('which', ['msbuild'], {encoding: 'utf8'}).returns({});
+
+      var result = msbuildFinder.find({ platform: 'darwin' });
+
+      expect(result).to.be.equal('msbuild');
+    });
+
+    it('should fallback to xbuild when msbuild is not present', function () {
+
+      var mock = this.sinon.mock(child);
+      mock.expects('spawnSync').withArgs('which', ['msbuild'], {encoding: 'utf8'}).returns({
+        stderr: 1
+      });
+
+      var result = msbuildFinder.find({ platform: 'darwin' });
+      expect(result).to.be.equal('xbuild');
+    });
   });
 
   it('should use xbuild on unknown platform', function () {
