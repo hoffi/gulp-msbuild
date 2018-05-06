@@ -231,6 +231,18 @@ describe('msbuild-command-builder', function () {
       expect(result).to.deep.equal(['/target:Rebuild', '/verbosity:normal', '/toolsversion:4.0', '/nologo', '/maxcpucount', '/property:Configuration=Release', '/custom1', '/custom2']);
     });
 
+    it('should parse templates in consoleLoggerParameters, fileLoggerParameters and loggerParameters when specified', function () {
+      var options = defaults;
+      options.consoleLoggerParameters = '<%= (file.path === "test.sln") ? "ErrorsOnly" : "WarningsOnly" %>';
+      options.fileLoggerParameters = 'LogFile=<%= file.path %>.log';
+      options.loggerParameters = 'XMLLogger,<%= (file.path === "test.sln") ? "./TestLogger.dll" : "./MyLogger.dll" %>;OutputAsHTML';
+      var command = commandBuilder.construct({ path: 'test.sln' }, options);
+
+      expect(command.args).to.contain('/clp:ErrorsOnly');
+      expect(command.args).to.contain('/flp:LogFile=test.sln.log');
+      expect(command.args).to.contain('/logger:XMLLogger,./TestLogger.dll;OutputAsHTML');
+    });
+
     it('should parse templates in properties', function () {
       var options = defaults;
       options.properties = { someProp: '<%= file.path %>', anotherProp: 'noTemplate' };

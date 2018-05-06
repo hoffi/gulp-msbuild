@@ -170,6 +170,7 @@ msbuild({ properties: { WarningLevel: 2 } })
 
 **Default:** false -> _Show Startup Banner and Copyright Message_
 
+
 #### fileLoggerParameters
 
 > Specify the parameters for the MSBuild File Logger.
@@ -181,11 +182,15 @@ msbuild({ properties: { WarningLevel: 2 } })
 msbuild({ fileLoggerParameters: 'LogFile=Build.log;Append;Verbosity=diagnostic' })
 ```
 
+**Hint:** Logger parameters options can use ```gulp-util``` templates (e.g. ```"<%= file.path %>"```)
+
 #### consoleLoggerParameters
 
 > Specify the parameters for the MSBuild Console Logger. (See fileLoggerParameters for a usage example)
 
 **Default:** None
+
+**Hint:** Logger parameters options can use ```gulp-util``` templates (e.g. ```"<%= file.path %>"```)
 
 #### loggerParameters
 
@@ -197,6 +202,8 @@ msbuild({ fileLoggerParameters: 'LogFile=Build.log;Append;Verbosity=diagnostic' 
 ```javascript
 msbuild({ loggerParameters: 'XMLLogger,./MyLogger.dll;OutputAsHTML' })
 ```
+
+**Hint:** Logger parameters options can use ```gulp-util``` templates (e.g. ```"<%= file.path %>"```)
 
 #### customArgs
 
