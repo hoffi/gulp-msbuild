@@ -9,6 +9,14 @@
 > msbuild plugin for [gulp](https://github.com/wearefractal/gulp).
 > Inspired by [grunt-msbuild](https://github.com/stevewillcock/grunt-msbuild)
 
+# Not maintained anymore
+
+This project is not maintained anymore. The main reason is that i no longer work with .NET and MSBuild, which makes it hard to still work on this project in my spare time.
+
+Also note that this plugin is not following the [Gulp Guidelines](https://github.com/gulpjs/gulp/blob/v3.9.1/docs/writing-a-plugin/guidelines.md#guidelines) as this is not intended to be used with gulp, which is also the reason why this plugin was [blacklisted](https://github.com/hoffi/gulp-msbuild/issues/72#issuecomment-422089404) in the official gulp plugin directory.
+
+If you would like to develop it further feel free to fork this project, i can link your fork here as well if you like. 
+
 ## Usage
 
 First, install `gulp-msbuild` as a development dependency:
