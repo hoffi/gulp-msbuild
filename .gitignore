@@ -2,3 +2,5 @@
 node_modules/
 temp/
 coverage
+.idea
+package-lock.json
