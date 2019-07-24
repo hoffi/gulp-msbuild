@@ -157,7 +157,7 @@ describe('msbuild-finder', function () {
     var toolsVersion = 15.0;
     var expectMSBuildVersion = constants.MSBUILD_VERSIONS[toolsVersion];
 
-    var pathRoot = process.env['ProgramFiles'] || path.join('C:', 'Program Files');	
+    var pathRoot = process.env['ProgramFiles'] || path.join('C:', 'Program Files');
     var expectedResult = path.join(pathRoot, 'MSBuild', '15.0', 'Bin', 'MSBuild.exe');
 
     var mock = this.sinon.mock(fs);
@@ -245,9 +245,47 @@ describe('msbuild-finder', function () {
     mock.expects('statSync').withArgs(vsCommunityPath).throws();
     mock.expects('statSync').withArgs(vsBuildToolsPath).throws();
 
-    var result = msbuildFinder.find({ platform: 'win32', toolsVersion: toolsVersion, architecture: 'x86' });
+    var result = msbuildFinder.find({
+      platform: 'win32',
+      toolsVersion: toolsVersion,
+      architecture: 'x86' });
 
     expect(result).to.be.equal(expectedResult);
+  });
+
+  describe(`should find version 16 from vs2019, when present`, () => {
+    // part of handling versions > 15 is allowing auto-detection of what is present
+    //  as such, there's too much to easily mock this out and these tests
+    //  will only apply if the host has vs2019 installed
+    var found = msbuildFinder.msBuildFromWhere('C:/Program Files (x86)');
+    var year = found.split(path.sep)
+      .filter(s => s.match(/^\d\d\d\d$/))[0];
+    if (parseInt(year) === 2019) {
+      it('should find the x64 msbuild when toolsVersion set to 16.0', function() {
+        var result = msbuildFinder.find({
+          platform: 'win32',
+          toolsVersion: 16.0,
+          architecture: 'x64'
+        });
+        var parts = result.split(path.sep);
+        expect(parts).to.contain("amd64");
+        expect(parts.indexOf("2019")).to.be.at.least(0);
+        expect(parts[parts.length-1].toLowerCase()).to.equal("msbuild.exe");
+        expect(fs.existsSync(result)).to.be.true;
+      });
+      it('should find the x64 msbuild when toolsVersion set to "auto"', function() {
+        var result = msbuildFinder.find({
+          platform: 'win32',
+          toolsVersion: 'auto',
+          architecture: 'x64'
+        });
+        var parts = result.split(path.sep);
+        expect(parts).to.contain("amd64");
+        expect(parts.indexOf("2019")).to.be.at.least(0);
+        expect(parts[parts.length-1].toLowerCase()).to.equal("msbuild.exe");
+        expect(fs.existsSync(result)).to.be.true;
+      });
+    }
   });
 
   it('should throw error with invalid toolsVersion', function () {
